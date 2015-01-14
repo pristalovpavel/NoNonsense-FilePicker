@@ -22,6 +22,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.dropbox.client2.DropboxAPI;
@@ -94,7 +95,7 @@ public class DropboxFilePickerFragment
             from.path = from.path.substring(0, from.path.length() - 1);
         }
         String parent = from.parentPath();
-        if (parent.isEmpty()) {
+        if (TextUtils.isEmpty(parent)) {
             parent = "/";
         }
 

@@ -37,8 +37,8 @@ import com.dropbox.client2.session.AppKeyPair;
  */
 public class DropboxSyncHelper {
     // Change these two lines to your app's stuff
-    final static public String APP_KEY = "INSERT_APP_KEY";
-    final static public String APP_SECRET = "INSERT_APP_SECRET";
+    final static public String APP_KEY = "l5fr0xxn84xqh4s";
+    final static public String APP_SECRET = "kxgmkxo7m4li9l0";
 
     public static final String PREF_DROPBOX_TOKEN = "dropboxtoken";
 
@@ -69,6 +69,6 @@ public class DropboxSyncHelper {
      */
     public static void saveToken(final Context context, final String token) {
         PreferenceManager.getDefaultSharedPreferences(context).edit()
-                .putString(PREF_DROPBOX_TOKEN, token).apply();
+                .putString(PREF_DROPBOX_TOKEN, token).commit();
     }
 }
