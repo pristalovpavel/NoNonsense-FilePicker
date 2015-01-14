@@ -18,8 +18,8 @@
 package com.nononsenseapps.filepicker.sample.dropbox;
 
 import android.annotation.SuppressLint;
-import android.content.AsyncTaskLoader;
-import android.content.Loader;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.widget.Toast;

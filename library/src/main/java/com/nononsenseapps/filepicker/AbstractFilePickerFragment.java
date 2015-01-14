@@ -18,9 +18,10 @@
 package com.nononsenseapps.filepicker;
 
 import android.app.Activity;
-import android.app.ListFragment;
-import android.app.LoaderManager;
-import android.content.Loader;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -171,8 +172,12 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
         createDirView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                NewFolderFragment.showDialog(getFragmentManager(),
-                        AbstractFilePickerFragment.this);
+                Activity activity = getActivity();
+                if(activity instanceof FragmentActivity)
+                {
+                    NewFolderFragment.showDialog(((FragmentActivity) activity).getSupportFragmentManager(),
+                            AbstractFilePickerFragment.this);
+                }
             }
         });
 
@@ -432,7 +437,7 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
             comparator = getComparator();
         }
         checkedItems.clear();
-        adapter.addAll(data);
+        for(T item : data) adapter.add(item);
         adapter.sort(comparator);
         setListAdapter(adapter);
         adapter.notifyDataSetChanged();

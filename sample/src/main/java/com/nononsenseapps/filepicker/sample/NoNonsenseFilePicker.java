@@ -182,7 +182,6 @@ public class NoNonsenseFilePicker extends Activity {
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
             Intent data) {
@@ -191,7 +190,7 @@ public class NoNonsenseFilePicker extends Activity {
             if (data.getBooleanExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE,
                     false)) {
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     ClipData clip = data.getClipData();
                     StringBuilder sb = new StringBuilder();
 
@@ -203,7 +202,7 @@ public class NoNonsenseFilePicker extends Activity {
                     }
 
                     textView.setText(sb.toString());
-                } else {
+                } else {*/
                     ArrayList<String> paths = data.getStringArrayListExtra(
                             FilePickerActivity.EXTRA_PATHS);
                     StringBuilder sb = new StringBuilder();
@@ -215,7 +214,7 @@ public class NoNonsenseFilePicker extends Activity {
                         }
                     }
                     textView.setText(sb.toString());
-                }
+                //}
 
             } else {
                 textView.setText(data.getData().toString());

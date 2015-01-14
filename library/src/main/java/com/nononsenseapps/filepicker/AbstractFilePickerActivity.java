@@ -20,7 +20,8 @@ package com.nononsenseapps.filepicker;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.FragmentManager;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.FragmentManager;
 import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
@@ -62,7 +63,7 @@ import java.util.List;
  *
  * @param <T>
  */
-public abstract class AbstractFilePickerActivity<T> extends Activity
+public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
         implements AbstractFilePickerFragment.OnFilePickedListener {
     public static final String EXTRA_START_PATH =
             "nononsense.intent" + ".START_PATH";
@@ -87,8 +88,9 @@ public abstract class AbstractFilePickerActivity<T> extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setupFauxDialog();
-        setupActionBar();
         super.onCreate(savedInstanceState);
+
+        setupActionBar();
 
         setContentView(R.layout.activity_filepicker);
 
@@ -102,7 +104,7 @@ public abstract class AbstractFilePickerActivity<T> extends Activity
                     intent.getBooleanExtra(EXTRA_ALLOW_MULTIPLE, allowMultiple);
         }
 
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         AbstractFilePickerFragment<T> fragment =
                 (AbstractFilePickerFragment<T>) fm.findFragmentByTag(TAG);
 
@@ -143,7 +145,7 @@ public abstract class AbstractFilePickerActivity<T> extends Activity
     }
 
     protected void setupActionBar() {
-        getActionBar().setTitle(getWindowTitle());
+        getSupportActionBar().setTitle(getWindowTitle());
     }
 
     protected abstract AbstractFilePickerFragment<T> getFragment(
@@ -191,13 +193,12 @@ public abstract class AbstractFilePickerActivity<T> extends Activity
         finish();
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onFilesPicked(final List<Uri> files) {
         Intent i = new Intent();
         i.putExtra(EXTRA_ALLOW_MULTIPLE, true);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+       /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             ClipData clip = null;
             for (Uri file : files) {
                 if (clip == null) {
@@ -208,13 +209,13 @@ public abstract class AbstractFilePickerActivity<T> extends Activity
                 }
             }
             i.setClipData(clip);
-        } else {
+        } else {*/
             ArrayList<String> paths = new ArrayList<String>();
             for (Uri file : files) {
                 paths.add(file.toString());
             }
             i.putStringArrayListExtra(EXTRA_PATHS, paths);
-        }
+        //}
 
         setResult(Activity.RESULT_OK, i);
         finish();

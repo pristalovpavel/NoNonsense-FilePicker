@@ -17,8 +17,8 @@
 
 package com.nononsenseapps.filepicker;
 
-import android.content.AsyncTaskLoader;
-import android.content.Loader;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.FileObserver;

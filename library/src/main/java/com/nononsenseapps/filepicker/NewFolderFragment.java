@@ -18,7 +18,8 @@
 package com.nononsenseapps.filepicker;
 
 
-import android.app.FragmentManager;
+import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 
 public class NewFolderFragment extends NewItemFragment {
 
@@ -31,7 +32,7 @@ public class NewFolderFragment extends NewItemFragment {
 
     @Override
     protected boolean validateName(final String itemName) {
-        return itemName != null && !itemName.isEmpty()
+        return itemName != null && !TextUtils.isEmpty(itemName)
                 && !itemName.contains("/");
     }
 
