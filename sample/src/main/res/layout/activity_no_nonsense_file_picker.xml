@@ -106,7 +106,7 @@
             android:layout_height="48dp"
             android:text="Pick SD-card"
             android:layout_marginTop="8dp"
-            android:id="@+id/button"
+            android:id="@+id/button_sd"
             android:gravity="center_vertical"
             style="?android:textAppearanceMedium"
             android:fontFamily="light"

@@ -17,11 +17,8 @@
 
 package com.nononsenseapps.filepicker.sample;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.ClipData;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -61,7 +58,7 @@ public class NoNonsenseFilePicker extends Activity {
                 (RadioGroup) findViewById(R.id.radioGroup);
         textView = (TextView) findViewById(R.id.text);
 
-        findViewById(R.id.button)
+        findViewById(R.id.button_sd)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {
