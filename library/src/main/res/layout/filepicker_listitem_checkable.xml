@@ -32,7 +32,8 @@
         android:visibility="visible"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        tools:ignore="ContentDescription"/>
+        tools:ignore="ContentDescription"
+        android:adjustViewBounds="true"/>
 
     <CheckedTextView
         android:layout_width="0dp"

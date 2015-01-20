@@ -148,22 +148,17 @@ public class BindableArrayAdapter<T> extends ArrayAdapter<T> {
      * @return
      */
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (viewBinder == null) {
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
+        if (viewBinder == null)
+        {
             return super.getView(position, convertView, parent);
         }
-        else {
-            View view;
-
-            if (convertView == null && viewBinder != null) {
-                view = viewBinder.inflateView(position, mResource, mInflater,
-                        parent);
-            }
-            else if (convertView == null) {
-                view = mInflater.inflate(mResource, parent, false);
-            } else {
-                view = convertView;
-            }
+        else
+        {
+            View view = convertView == null
+                    ? viewBinder.inflateView(position, mResource, mInflater, parent)
+                    : convertView;
 
             viewBinder.setViewValue(view, position, getItem(position));
             return view;

@@ -31,7 +31,8 @@
         android:visibility="visible"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        tools:ignore="ContentDescription"/>
+        tools:ignore="ContentDescription"
+        android:adjustViewBounds="true"/>
 
     <TextView
         android:layout_width="0dp"
@@ -41,8 +42,8 @@
         android:padding="8dp"
         android:gravity="center_vertical"
         android:id="@android:id/text1"
-        android:textColor="#ffff0000"
         android:maxLines="1"
         android:ellipsize="end"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:text="@string/name"/>
 </LinearLayout>

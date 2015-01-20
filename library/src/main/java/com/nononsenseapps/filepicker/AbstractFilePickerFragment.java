@@ -18,6 +18,7 @@
 package com.nononsenseapps.filepicker;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -479,6 +480,7 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
 
                 ViewHolder viewHolder = new ViewHolder();
                 viewHolder.icon = view.findViewById(R.id.item_icon);
+
                 viewHolder.text =
                         (TextView) view.findViewById(android.R.id.text1);
                 if (checkable) {
