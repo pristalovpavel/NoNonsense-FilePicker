@@ -105,8 +105,8 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
         }
 
         FragmentManager fm = getSupportFragmentManager();
-        AbstractFilePickerFragment<T> fragment =
-                (AbstractFilePickerFragment<T>) fm.findFragmentByTag(TAG);
+        AbstractFilePickerFragment fragment =
+                (AbstractFilePickerFragment) fm.findFragmentByTag(TAG);
 
         if (fragment == null) {
             fragment =
@@ -148,7 +148,7 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
         getSupportActionBar().setTitle(getWindowTitle());
     }
 
-    protected abstract AbstractFilePickerFragment<T> getFragment(
+    protected abstract AbstractFilePickerFragment getFragment(
             final String startPath, final int mode, final boolean allowMultiple,
             final boolean allowCreateDir);
 

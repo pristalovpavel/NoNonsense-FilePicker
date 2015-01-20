@@ -29,6 +29,8 @@ import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
 import com.nononsenseapps.filepicker.AbstractFilePickerFragment;
+import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.FileSystemObjectInterface;
+import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.LocalFileSystemObject;
 import com.nononsenseapps.filepicker.sample.R;
 
 import java.io.File;
@@ -38,8 +40,8 @@ import java.util.List;
 
 @SuppressLint("ValidFragment")
 public class DropboxFilePickerFragment
-        extends AbstractFilePickerFragment<DropboxAPI.Entry> {
-
+        extends AbstractFilePickerFragment
+{
     private final DropboxAPI<AndroidAuthSession> dbApi;
     private FolderCreator folderCreator;
 
@@ -56,7 +58,7 @@ public class DropboxFilePickerFragment
     }
 
     public void onNewFolder(final String name) {
-        File folder = new File(currentPath.path, name);
+        File folder = new File(currentPath.getPath(), name);
 
         if (folderCreator == null) {
             folderCreator = new FolderCreator();
@@ -72,7 +74,7 @@ public class DropboxFilePickerFragment
             for (String path : paths) {
                 try {
                     dbApi.createFolder(path);
-                    currentPath = dbApi.metadata(path, 1, null, false, null);
+                    //currentPath = dbApi.metadata(path, 1, null, false, null);
                     refresh();
                 } catch (DropboxException e) {
                     Toast.makeText(getActivity(), R.string.create_folder_error,
@@ -83,12 +85,12 @@ public class DropboxFilePickerFragment
         }
     }
 
-    @Override
+    /*@Override
     protected boolean isDir(final DropboxAPI.Entry file) {
         return file.isDir;
-    }
+    }*/
 
-    @Override
+    /*@Override
     protected DropboxAPI.Entry getParent(final DropboxAPI.Entry from) {
         // Take care of a slight limitation in Dropbox code:
         if (from.path.length() > 1 && from.path.endsWith("/")) {
@@ -101,64 +103,65 @@ public class DropboxFilePickerFragment
 
         return getPath(parent);
 
-    }
+    }*/
 
-    @Override
+    /*@Override
     protected DropboxAPI.Entry getPath(final String path) {
         final DropboxAPI.Entry entry = new DropboxAPI.Entry();
         entry.path = path;
         entry.isDir = true;
         return entry;
 
-    }
+    }*/
 
-    @Override
+    /*@Override
     protected String getFullPath(final DropboxAPI.Entry file) {
         return file.path;
-    }
+    }*/
 
-    @Override
+    /*@Override
     protected String getName(final DropboxAPI.Entry file) {
         return file.fileName();
-    }
+    }*/
 
     @Override
-    protected DropboxAPI.Entry getRoot() {
-        return getPath("/");
+    protected /*DropboxAPI.Entry*/FileSystemObjectInterface getRoot() {
+        return new LocalFileSystemObject(new File("/"));//getPath("/");
     }
 
-    @Override
+    /*@Override
     protected Uri toUri(final DropboxAPI.Entry file) {
         return new Uri.Builder().scheme("dropbox").path(file.path).build();
-    }
+    }*/
 
     @Override
-    protected Comparator<DropboxAPI.Entry> getComparator() {
+    protected Comparator/*<DropboxAPI.Entry>*/ getComparator() {
         return new Comparator<DropboxAPI.Entry>() {
             @Override
             public int compare(final DropboxAPI.Entry lhs,
                     final DropboxAPI.Entry rhs) {
-                if (isDir(lhs) && !isDir(rhs)) {
+                /*if (isDir(lhs) && !isDir(rhs)) {
                     return -1;
                 } else if (isDir(rhs) && !isDir(lhs)) {
                     return 1;
                 } else {
                     return lhs.fileName().toLowerCase()
                             .compareTo(rhs.fileName().toLowerCase());
-                }
+                }*/
+                return 0;
             }
         };
     }
 
     @Override
-    protected Loader<List<DropboxAPI.Entry>> getLoader() {
-        return new AsyncTaskLoader<List<DropboxAPI.Entry>>(getActivity()) {
+    protected Loader<List<FileSystemObjectInterface>> getLoader() {
+        return new AsyncTaskLoader<List<FileSystemObjectInterface>>(getActivity()) {
 
             @Override
-            public List<DropboxAPI.Entry> loadInBackground() {
-                ArrayList<DropboxAPI.Entry> files =
-                        new ArrayList<DropboxAPI.Entry>();
-                try {
+            public List<FileSystemObjectInterface> loadInBackground() {
+                ArrayList<FileSystemObjectInterface> files =
+                        new ArrayList<FileSystemObjectInterface>();
+                /*try {
 
                     if (!dbApi.metadata(currentPath.path, 1, null, false,
                             null).isDir) {
@@ -175,7 +178,7 @@ public class DropboxFilePickerFragment
                         }
                     }
                 } catch (DropboxException e) {
-                }
+                }*/
 
                 return files;
             }
@@ -184,10 +187,12 @@ public class DropboxFilePickerFragment
              * Handles a request to start the Loader.
              */
             @Override
-            protected void onStartLoading() {
+            protected void onStartLoading()
+            {
                 super.onStartLoading();
 
-                if (currentPath == null || !currentPath.isDir) {
+                if (currentPath == null /*|| !currentPath.isDir*/)
+                {
                     currentPath = getRoot();
                 }
 
@@ -198,7 +203,8 @@ public class DropboxFilePickerFragment
              * Handles a request to completely reset the Loader.
              */
             @Override
-            protected void onReset() {
+            protected void onReset()
+            {
                 super.onReset();
             }
         };

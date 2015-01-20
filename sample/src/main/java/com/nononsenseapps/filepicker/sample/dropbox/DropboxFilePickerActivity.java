@@ -43,7 +43,7 @@ public class DropboxFilePickerActivity
     }
 
     @Override
-    protected AbstractFilePickerFragment<DropboxAPI.Entry> getFragment(
+    protected AbstractFilePickerFragment getFragment(
             final String startPath, final int mode, final boolean allowMultiple,
             final boolean allowCreateDir) {
         if (mDBApi == null || !mDBApi.getSession().isLinked()) {

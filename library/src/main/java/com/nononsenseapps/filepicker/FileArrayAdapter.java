@@ -10,6 +10,7 @@ import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.FileSystemObjectInterface;
 import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.LocalFileSystemObject;
 
 import java.io.File;
@@ -22,13 +23,13 @@ public class FileArrayAdapter extends BaseAdapter
 {
     private Context context;
     private LayoutInflater inflater;
-    private List<LocalFileSystemObject> data;
+    private List<FileSystemObjectInterface> data;
 
     private static final int WRONG_CODE = -1;
     private static final int FILE_CODE = 0;
     private static final int DIRECTORY_CODE = 1;
 
-    public FileArrayAdapter(Context context, List<LocalFileSystemObject> data)
+    public FileArrayAdapter(Context context, List<FileSystemObjectInterface> data)
     {
         this.context = context;
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -54,7 +55,7 @@ public class FileArrayAdapter extends BaseAdapter
      * @return The data at the specified position.
      */
     @Override
-    public Object getItem(int position)
+    public FileSystemObjectInterface getItem(int position)
     {
         return data.get(position);
     }
@@ -74,17 +75,17 @@ public class FileArrayAdapter extends BaseAdapter
     @Override
     public int getItemViewType(int position)
     {
-        Object obj = getItem(position);
-        if(obj instanceof LocalFileSystemObject)
-        {
-            if(((LocalFileSystemObject) obj).isDir()) return DIRECTORY_CODE;
-            else if(((LocalFileSystemObject) obj).isFile()) return FILE_CODE;
-        }
+        FileSystemObjectInterface obj = getItem(position);
+
+        if(obj.isDir()) return DIRECTORY_CODE;
+        else if(obj.isFile()) return FILE_CODE;
+
         return WRONG_CODE;
     }
 
     @Override
-    public int getViewTypeCount() {
+    public int getViewTypeCount()
+    {
         // Unknown object, Files and dirs, so 3
         return 3;
     }

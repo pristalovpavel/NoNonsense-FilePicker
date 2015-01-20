@@ -24,24 +24,17 @@ import android.os.Environment;
 import android.os.FileObserver;
 import android.widget.Toast;
 
+import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.FileSystemObjectInterface;
+import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.LocalFileSystemObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class FilePickerFragment extends AbstractFilePickerFragment<File> {
-
+public class FilePickerFragment extends AbstractFilePickerFragment
+{
     public FilePickerFragment() {}
-
-    /**
-     * Return true if the path is a directory and not a file.
-     *
-     * @param path
-     */
-    @Override
-    protected boolean isDir(final File path) {
-        return path.isDirectory();
-    }
 
     /**
      * Return the path to the parent directory. Should return the root if
@@ -49,7 +42,7 @@ public class FilePickerFragment extends AbstractFilePickerFragment<File> {
      *
      * @param from
      */
-    @Override
+    /*@Override
     protected File getParent(final File from) {
         if (from.getParentFile() != null) {
             if (from.isFile()) {
@@ -60,65 +53,29 @@ public class FilePickerFragment extends AbstractFilePickerFragment<File> {
         } else {
             return from;
         }
-    }
-
-    /**
-     * Convert the path to the type used.
-     *
-     * @param path
-     */
-    @Override
-    protected File getPath(final String path) {
-        return new File(path);
-    }
-
-    /**
-     * @param path
-     * @return the full path to the file
-     */
-    @Override
-    protected String getFullPath(final File path) {
-        return path.getPath();
-    }
-
-    /**
-     * @param path
-     * @return the name of this file/folder
-     */
-    @Override
-    protected String getName(final File path) {
-        return path.getName();
-    }
+    }*/
 
     /**
      * Get the root path (lowest allowed).
      */
     @Override
-    protected File getRoot() {
-        return Environment.getExternalStorageDirectory();
-    }
-
-    /**
-     * Convert the path to a URI for the return intent
-     * @param file
-     * @return
-     */
-    @Override
-    protected Uri toUri(final File file) {
-        return Uri.fromFile(file);
+    protected FileSystemObjectInterface getRoot() {
+        return new LocalFileSystemObject(Environment.getExternalStorageDirectory());
     }
 
     /**
      * @return a comparator that can sort the items alphabetically
      */
     @Override
-    protected Comparator<File> getComparator() {
-        return new Comparator<File>() {
+    protected Comparator<FileSystemObjectInterface> getComparator() {
+        return new Comparator<FileSystemObjectInterface>() {
             @Override
-            public int compare(final File lhs, final File rhs) {
-                if (lhs.isDirectory() && !rhs.isDirectory()) {
+            public int compare(final FileSystemObjectInterface lhs,
+                               final FileSystemObjectInterface rhs)
+            {
+                if (lhs.isDir() && !rhs.isDir()) {
                     return -1;
-                } else if (rhs.isDirectory() && !lhs.isDirectory()) {
+                } else if (rhs.isDir() && !lhs.isDir()) {
                     return 1;
                 } else {
                     return lhs.getName().toLowerCase().compareTo(rhs.getName()
@@ -133,20 +90,27 @@ public class FilePickerFragment extends AbstractFilePickerFragment<File> {
      * and monitors changes.
      */
     @Override
-    protected Loader<List<File>> getLoader() {
-        return new AsyncTaskLoader<List<File>>(getActivity()) {
-
+    protected Loader<List<FileSystemObjectInterface>> getLoader()
+    {
+        return new AsyncTaskLoader<List<FileSystemObjectInterface>>(getActivity())
+        {
             FileObserver fileObserver;
 
             @Override
-            public List<File> loadInBackground() {
-                ArrayList<File> files = new ArrayList<File>();
-                File[] listFiles = currentPath.listFiles();
-                if(listFiles != null) {
-                    for (java.io.File f : listFiles) {
+            public List<FileSystemObjectInterface> loadInBackground()
+            {
+                ArrayList<FileSystemObjectInterface> files = new ArrayList<FileSystemObjectInterface>();
+                File[] listFiles = ((LocalFileSystemObject)currentPath).getFile().listFiles();
+
+                if(listFiles != null)
+                {
+                    for (java.io.File f : listFiles)
+                    {
                         if ((mode == MODE_FILE || mode == MODE_FILE_AND_DIR)
-                                || f.isDirectory()) {
-                            files.add(f);
+                                || f.isDirectory())
+                        {
+                            LocalFileSystemObject obj = new LocalFileSystemObject(f);
+                            files.add(obj);
                         }
                     }
                 }
@@ -161,7 +125,7 @@ public class FilePickerFragment extends AbstractFilePickerFragment<File> {
                 super.onStartLoading();
 
                 // handle if directory does not exist. Fall back to root.
-                if (currentPath == null || !currentPath.isDirectory()) {
+                if (currentPath == null || !currentPath.isDir()) {
                     currentPath = getRoot();
                 }
 
@@ -206,11 +170,13 @@ public class FilePickerFragment extends AbstractFilePickerFragment<File> {
      * @param name The name of the folder the user wishes to create.
      */
     @Override
-    public void onNewFolder(final String name) {
-        File folder = new File(currentPath, name);
+    public void onNewFolder(final String name)
+    {
+        File folder = new File(currentPath.getPath(), name);
 
-        if (folder.mkdir()) {
-            currentPath = folder;
+        if (folder.mkdir())
+        {
+            ((LocalFileSystemObject)currentPath).setFile(folder);
             refresh();
         } else {
             Toast.makeText(getActivity(), R.string.create_folder_error,

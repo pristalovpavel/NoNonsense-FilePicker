@@ -29,12 +29,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.FileSystemObjectInterface;
+import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.LocalFileSystemObject;
+
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -47,8 +53,8 @@ import java.util.List;
  * OnFilePickedListener}
  * interface.
  */
-public abstract class AbstractFilePickerFragment<T> extends ListFragment
-        implements LoaderManager.LoaderCallbacks<List<T>>,
+public abstract class AbstractFilePickerFragment extends ListFragment
+        implements LoaderManager.LoaderCallbacks<List<FileSystemObjectInterface>>,
         NewItemFragment.OnNewFolderListener,
         AdapterView.OnItemLongClickListener {
 
@@ -69,12 +75,13 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
     // Used for saving state.
     protected static final String KEY_CURRENT_PATH = "KEY_CURRENT PATH";
     protected final DefaultHashMap<Integer, Boolean> checkedItems;
-    protected T currentPath = null;
+    protected FileSystemObjectInterface currentPath = null;
     protected boolean allowCreateDir = false;
     protected boolean allowMultiple = false;
-    protected Comparator<T> comparator = null;
+    protected Comparator<FileSystemObjectInterface> comparator = null;
     private OnFilePickedListener listener;
-    private BindableArrayAdapter<T> adapter;
+    //private BindableArrayAdapter<T> adapter;
+    private FileArrayAdapter adapter;
     private TextView currentDirView;
 
     /**
@@ -139,7 +146,7 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
                                     Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        if (mode == MODE_FILE && isDir(currentPath)) {
+                        if (mode == MODE_FILE && currentPath.isDir()) {
                             Toast.makeText(getActivity(),
                                     R.string.select_something_first,
                                     Toast.LENGTH_SHORT).show();
@@ -149,7 +156,7 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
                         if (allowMultiple) {
                             listener.onFilesPicked(toUri(getCheckedItems()));
                         } else {
-                            listener.onFilePicked(toUri(currentPath));
+                            listener.onFilePicked(currentPath.toUri());
                         }
                     }
                 });
@@ -159,7 +166,7 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
                             @Override
                             public void onClick(final View v) {
                                 // Go to parent
-                                currentPath = getParent(currentPath);
+                                currentPath = currentPath.getParent();
                                 refresh();
                             }
                         });
@@ -185,23 +192,18 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
         currentDirView = (TextView) view.findViewById(R.id.current_dir);
         // Restore state
         if (currentPath != null) {
-            currentDirView.setText(getFullPath(currentPath));
+            currentDirView.setText(currentPath.getPath());
         }
 
         return view;
     }
 
-    /**
-     * Return true if the path is a directory and not a file.
-     *
-     * @param path
-     */
-    protected abstract boolean isDir(final T path);
-
-    protected List<Uri> toUri(List<T> files) {
+    protected List<Uri> toUri(List<FileSystemObjectInterface> files)
+    {
         ArrayList<Uri> uris = new ArrayList<Uri>();
-        for (T file : files) {
-            uris.add(toUri(file));
+        for (FileSystemObjectInterface file : files)
+        {
+            uris.add(file.toUri());
         }
         return uris;
     }
@@ -209,12 +211,13 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
     /**
      * @return the selected files. Can be empty.
      */
-    protected List<T> getCheckedItems() {
-        final BindableArrayAdapter<T> adapter =
-                (BindableArrayAdapter<T>) getListAdapter();
-        final ArrayList<T> files = new ArrayList<T>();
-        for (int pos : checkedItems.keySet()) {
-            if (checkedItems.get(pos)) {
+    protected List<FileSystemObjectInterface> getCheckedItems()
+    {
+        final ArrayList<FileSystemObjectInterface> files = new ArrayList<FileSystemObjectInterface>();
+        for (int pos : checkedItems.keySet())
+        {
+            if (checkedItems.get(pos))
+            {
                 files.add(adapter.getItem(pos));
             }
         }
@@ -227,41 +230,42 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
      * @param path
      * @return
      */
-    protected abstract Uri toUri(final T path);
+    //protected abstract Uri toUri(final T path);
 
     /**
      * Return the path to the parent directory. Should return the root if
      * from is root.
      *
-     * @param from
      */
-    protected abstract T getParent(final T from);
-
-    /**
-     * @param path
-     * @return the full path to the file
-     */
-    protected abstract String getFullPath(final T path);
+    //protected abstract T getParent(final T from);
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
+    public void onListItemClick(ListView l, View v, int position, long id)
+    {
         super.onListItemClick(l, v, position, id);
-        currentPath = (T) getListAdapter().getItem(position);
-        if (isDir(currentPath)) {
+        currentPath = (FileSystemObjectInterface) getListAdapter().getItem(position);
+        if (currentPath.isDir())
+        {
             refresh();
-        } else if (isCheckable(currentPath)) {
+        }
+        else if (isCheckable(currentPath))
+        {
             toggleItemCheck(
                     (CheckedTextView) v.findViewById(android.R.id.text1),
                     position, currentPath);
         }
     }
 
-    protected boolean isCheckable(final T data) {
+    protected boolean isCheckable(final FileSystemObjectInterface data)
+    {
         final boolean checkable;
-        if (isDir(data)) {
+        if (data.isDir())
+        {
             checkable = ((mode == MODE_DIR && allowMultiple) ||
                          (mode == MODE_FILE_AND_DIR && allowMultiple));
-        } else {
+        }
+        else
+        {
             // File
             checkable = (mode != MODE_DIR);
         }
@@ -269,57 +273,71 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
     }
 
     protected void toggleItemCheck(final CheckedTextView view,
-            final int position, final T data) {
-        if (!isCheckable(data)) {
+            final int position, final FileSystemObjectInterface data)
+    {
+        if (!isCheckable(data))
+        {
             return;
         }
 
         final boolean oldVal = checkedItems.get(position);
 
-        if (!allowMultiple) {
+        if (!allowMultiple)
+        {
             checkedItems.clear();
         }
+
         checkedItems.put(position, !oldVal);
         // Redraw the items
         getListView().invalidateViews();
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(Activity activity)
+    {
         super.onAttach(activity);
-        try {
+        try
+        {
             listener = (OnFilePickedListener) activity;
-        } catch (ClassCastException e) {
+        }
+        catch (ClassCastException e)
+        {
             throw new ClassCastException(activity.toString() +
                                          " must implement OnFilePickedListener");
         }
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         // Retain this fragment across configuration changes.
         setRetainInstance(true);
 
         // Only if we have no state
-        if (currentPath == null) {
-            if (savedInstanceState != null) {
+        if (currentPath == null)
+        {
+            if (savedInstanceState != null)
+            {
                 mode = savedInstanceState.getInt(KEY_MODE, mode);
                 allowCreateDir = savedInstanceState
                         .getBoolean(KEY_ALLOW_DIR_CREATE, allowCreateDir);
                 allowMultiple = savedInstanceState
                         .getBoolean(KEY_ALLOW_MULTIPLE, allowMultiple);
+                // TODO need to operate with FileSystemObjectInterface here!
                 currentPath =
-                        getPath(savedInstanceState.getString(KEY_CURRENT_PATH));
+                        new LocalFileSystemObject(new File(savedInstanceState.getString(KEY_CURRENT_PATH)));
             } else if (getArguments() != null) {
                 mode = getArguments().getInt(KEY_MODE, mode);
                 allowCreateDir = getArguments()
                         .getBoolean(KEY_ALLOW_DIR_CREATE, allowCreateDir);
                 allowMultiple = getArguments()
                         .getBoolean(KEY_ALLOW_MULTIPLE, allowMultiple);
-                if (getArguments().containsKey(KEY_START_PATH)) {
+                if (getArguments().containsKey(KEY_START_PATH))
+                {
+                    // TODO need to operate with FileSystemObjectInterface here!
                     currentPath =
-                            getPath(getArguments().getString(KEY_START_PATH));
+                            new LocalFileSystemObject(new File(getArguments().getString(KEY_START_PATH)));
                 }
             }
 
@@ -354,12 +372,12 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
      *
      * @param path
      */
-    protected abstract T getPath(final String path);
+    //protected abstract T getPath(final String path);
 
     /**
      * Get the root path (lowest allowed).
      */
-    protected abstract T getRoot();
+    protected abstract FileSystemObjectInterface getRoot();
 
     /**
      * Refreshes the list. Call this when current path changes.
@@ -384,13 +402,20 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
      */
     @Override
     public boolean onItemLongClick(final AdapterView<?> parent, final View view,
-            final int position, final long id) {
-        final T data = (T) getListAdapter().getItem(position);
-        if (!isCheckable(data)) {
+            final int position, final long id)
+    {
+        if(!(getListAdapter() instanceof FileArrayAdapter)) return false;
+
+        final FileSystemObjectInterface data =
+                (FileSystemObjectInterface) getListAdapter().getItem(position);
+
+        if (!isCheckable(data))
+        {
             return false;
         }
         // Special case for single choice to handle directories
-        if (!allowMultiple) {
+        if (!allowMultiple)
+        {
             return false;
         }
 
@@ -407,7 +432,7 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
      * @return Return a new Loader instance that is ready to start loading.
      */
     @Override
-    public Loader<List<T>> onCreateLoader(final int id, final Bundle args) {
+    public Loader<List<FileSystemObjectInterface>> onCreateLoader(final int id, final Bundle args) {
         return getLoader();
     }
 
@@ -415,7 +440,7 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
      * Get a loader that lists the files in the current path,
      * and monitors changes.
      */
-    protected abstract Loader<List<T>> getLoader();
+    protected abstract Loader<List<FileSystemObjectInterface>> getLoader();
 
     /**
      * Called when a previously created loader has finished its load.
@@ -424,31 +449,38 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
      * @param data   The data generated by the Loader.
      */
     @Override
-    public void onLoadFinished(final Loader<List<T>> loader,
-            final List<T> data) {
-        if (adapter == null) {
+    public void onLoadFinished(final Loader<List<FileSystemObjectInterface>> loader,
+            final List<FileSystemObjectInterface> data) {
+        /*if (adapter == null) {
             // View type not really used, overridden in ViewBinder
             adapter = new BindableArrayAdapter<T>(getActivity(),
                     R.layout.filepicker_listitem_checkable);
             adapter.setViewBinder(getViewBinder());
         } else {
             adapter.clear();
-        }
-        if (comparator == null) {
+        }*/
+        Collections.sort(data, getComparator());
+
+        adapter = new FileArrayAdapter(getActivity(), data);
+
+        /*if (comparator == null)
+        {
             comparator = getComparator();
-        }
+        }*/
+
         checkedItems.clear();
-        for(T item : data) adapter.add(item);
-        adapter.sort(comparator);
+
+        //for(T item : data) adapter.add(item);
+        //adapter.sort(comparator);
         setListAdapter(adapter);
         adapter.notifyDataSetChanged();
-        currentDirView.setText(getFullPath(currentPath));
+        currentDirView.setText(currentPath.getPath());
     }
 
     /**
      * @return a ViewBinder to handle list items, or null.
      */
-    protected BindableArrayAdapter.ViewBinder<T> getViewBinder() {
+    /*protected BindableArrayAdapter.ViewBinder<T> getViewBinder() {
         class ViewHolder {
             protected View icon;
             protected TextView text;
@@ -468,7 +500,7 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
              * @param parent
              * @return
              */
-            @Override
+            /*@Override
             public View inflateView(final int position, final int defResource,
                     final LayoutInflater inflater, final ViewGroup parent) {
                 final boolean checkable =
@@ -502,10 +534,10 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
              * @param data
              * @return
              */
-            @Override
+            /*@Override
             public boolean isDir(final int position, final T data) {
                 return AbstractFilePickerFragment.this.isDir(data);
-            }
+            }*/
 
             /**
              * Fill the content in the row
@@ -513,14 +545,14 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
              * @param position
              * @param data
              */
-            @Override
+            /*@Override
             public void setViewValue(final View view, final int position,
-                    final T data) {
+                    final FileSystemObjectInterface data) {
                 if (view.getTag() == null) {
                     return;
                 }
 
-                ((ViewHolder) view.getTag()).text.setText(getName(data));
+                ((ViewHolder) view.getTag()).text.setText(data.getName());
 
                 ((ViewHolder) view.getTag()).icon.setVisibility(
                         isDir(position, data) ? View.VISIBLE : View.GONE);
@@ -531,18 +563,18 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
                 }
             }
         };
-    }
+    }*/
 
     /**
      * @return a comparator that can sort the items alphabetically
      */
-    protected abstract Comparator<T> getComparator();
+    protected abstract Comparator<FileSystemObjectInterface> getComparator();
 
     /**
      * @param path
      * @return the name of this file/folder
      */
-    protected abstract String getName(final T path);
+    //protected abstract String getName(final T path);
 
     /**
      * Called when a previously created loader is being reset, and thus
@@ -552,7 +584,7 @@ public abstract class AbstractFilePickerFragment<T> extends ListFragment
      * @param loader The Loader that is being reset.
      */
     @Override
-    public void onLoaderReset(final Loader<List<T>> loader) {
+    public void onLoaderReset(final Loader<List<FileSystemObjectInterface>> loader) {
         setListAdapter(null);
         adapter = null;
     }

@@ -1,5 +1,7 @@
 package com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core;
 
+import android.net.Uri;
+
 import java.io.File;
 
 /**
@@ -9,6 +11,16 @@ public class LocalFileSystemObject
         implements FileSystemObjectInterface
 {
     private File file;
+
+    public void setFile(File file)
+    {
+        this.file = file;
+    }
+
+    public File getFile()
+    {
+        return file;
+    }
 
     public LocalFileSystemObject(File file)
     {
@@ -59,5 +71,30 @@ public class LocalFileSystemObject
         return file != null ? file.isFile() : false ;
     }
 
+    /**
+     * Returns Uri representation of file path
+     *
+     * @return Uri with path
+     */
+    @Override
+    public Uri toUri()
+    {
+        return file != null ? Uri.fromFile(file) : null;
+    }
 
+    /**
+     * Return the path to the parent directory. Should return the root if
+     * from is root.     *
+     */
+    @Override
+    public FileSystemObjectInterface getParent()
+    {
+        if(file == null) return null;
+
+
+
+        return file.getParentFile() != null ?
+                new LocalFileSystemObject(file.getParentFile()) :
+                this;
+    }
 }

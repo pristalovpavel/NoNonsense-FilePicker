@@ -1,5 +1,7 @@
 package com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core;
 
+import android.net.Uri;
+
 /**
  * Created by Pristalov Pavel on 15.01.2015 for NoNonsense-FilePicker.
  */
@@ -28,4 +30,16 @@ public interface FileSystemObjectInterface
      * @return true - file, false otherwise
      */
     public boolean isFile();
+
+    /**
+     * Returns Uri representation of file path
+     * @return Uri with path
+     */
+    public Uri toUri();
+
+    /**
+     * Return the path to the parent directory. Should return the root if
+     * from is root.     *
+     */
+    public FileSystemObjectInterface getParent();
 }
