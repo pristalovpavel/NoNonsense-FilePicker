@@ -19,7 +19,6 @@ package com.nononsenseapps.filepicker;
 
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
-import android.net.Uri;
 import android.os.Environment;
 import android.os.FileObserver;
 import android.widget.Toast;
@@ -66,7 +65,7 @@ public class FilePickerFragment extends AbstractFilePickerFragment
     /**
      * @return a comparator that can sort the items alphabetically
      */
-    @Override
+    /*@Override
     protected Comparator<FileSystemObjectInterface> getComparator() {
         return new Comparator<FileSystemObjectInterface>() {
             @Override
@@ -83,7 +82,7 @@ public class FilePickerFragment extends AbstractFilePickerFragment
                 }
             }
         };
-    }
+    }*/
 
     /**
      * Get a loader that lists the Files in the current path,
@@ -130,7 +129,7 @@ public class FilePickerFragment extends AbstractFilePickerFragment
                 }
 
                 // Start watching for changes
-                fileObserver = new FileObserver(currentPath.getPath(),
+                fileObserver = new FileObserver(currentPath.getFullPath(),
                         FileObserver.CREATE |
                                 FileObserver.DELETE
                                 | FileObserver.MOVED_FROM | FileObserver.MOVED_TO
@@ -172,7 +171,7 @@ public class FilePickerFragment extends AbstractFilePickerFragment
     @Override
     public void onNewFolder(final String name)
     {
-        File folder = new File(currentPath.getPath(), name);
+        File folder = new File(((LocalFileSystemObject)currentPath).getFile(), name);
 
         if (folder.mkdir())
         {

@@ -17,7 +17,13 @@ public interface FileSystemObjectInterface
      * Returns the full path to current file or directory
      * @return path to object
      */
-    public String getPath();
+    public FileSystemObjectInterface getDir(String path);
+
+    /**
+     * Returns String-path to current object (with file name)
+     * @return full path to current object
+     */
+    public String getFullPath();
 
     /**
      * Returns true if the object is folder

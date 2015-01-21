@@ -20,17 +20,15 @@ package com.nononsenseapps.filepicker.sample.dropbox;
 import android.annotation.SuppressLint;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
 import com.nononsenseapps.filepicker.AbstractFilePickerFragment;
+import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.DropboxFileSystemObject;
 import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.FileSystemObjectInterface;
-import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.LocalFileSystemObject;
 import com.nononsenseapps.filepicker.sample.R;
 
 import java.io.File;
@@ -58,7 +56,7 @@ public class DropboxFilePickerFragment
     }
 
     public void onNewFolder(final String name) {
-        File folder = new File(currentPath.getPath(), name);
+        File folder = new File(currentPath.getFullPath(), name);
 
         if (folderCreator == null) {
             folderCreator = new FolderCreator();
@@ -101,17 +99,16 @@ public class DropboxFilePickerFragment
             parent = "/";
         }
 
-        return getPath(parent);
+        return getDir(parent);
 
     }*/
 
     /*@Override
-    protected DropboxAPI.Entry getPath(final String path) {
+    protected DropboxAPI.Entry getDir(final String path) {
         final DropboxAPI.Entry entry = new DropboxAPI.Entry();
         entry.path = path;
         entry.isDir = true;
         return entry;
-
     }*/
 
     /*@Override
@@ -125,8 +122,12 @@ public class DropboxFilePickerFragment
     }*/
 
     @Override
-    protected /*DropboxAPI.Entry*/FileSystemObjectInterface getRoot() {
-        return new LocalFileSystemObject(new File("/"));//getPath("/");
+    protected /*DropboxAPI.Entry*/ DropboxFileSystemObject getRoot()
+    {
+        final DropboxAPI.Entry entry = new DropboxAPI.Entry();
+        entry.path = "/";
+        entry.isDir = true;
+        return new DropboxFileSystemObject(entry);
     }
 
     /*@Override
@@ -134,51 +135,59 @@ public class DropboxFilePickerFragment
         return new Uri.Builder().scheme("dropbox").path(file.path).build();
     }*/
 
-    @Override
-    protected Comparator/*<DropboxAPI.Entry>*/ getComparator() {
-        return new Comparator<DropboxAPI.Entry>() {
+    /*@Override
+    protected Comparator<DropboxAPI.Entry> getComparator()
+    {
+        return new Comparator<DropboxAPI.Entry>()
+        {
             @Override
             public int compare(final DropboxAPI.Entry lhs,
                     final DropboxAPI.Entry rhs) {
-                /*if (isDir(lhs) && !isDir(rhs)) {
+                if (isDir(lhs) && !isDir(rhs)) {
                     return -1;
                 } else if (isDir(rhs) && !isDir(lhs)) {
                     return 1;
                 } else {
                     return lhs.fileName().toLowerCase()
                             .compareTo(rhs.fileName().toLowerCase());
-                }*/
+                }
                 return 0;
             }
         };
     }
+    */
 
     @Override
-    protected Loader<List<FileSystemObjectInterface>> getLoader() {
-        return new AsyncTaskLoader<List<FileSystemObjectInterface>>(getActivity()) {
+    protected Loader<List<FileSystemObjectInterface>> getLoader()
+    {
+        return new AsyncTaskLoader<List<FileSystemObjectInterface>>(getActivity())
+        {
 
             @Override
-            public List<FileSystemObjectInterface> loadInBackground() {
+            public List<FileSystemObjectInterface> loadInBackground()
+            {
                 ArrayList<FileSystemObjectInterface> files =
                         new ArrayList<FileSystemObjectInterface>();
-                /*try {
-
-                    if (!dbApi.metadata(currentPath.path, 1, null, false,
+                try
+                {
+                    if (!dbApi.metadata(currentPath.getFullPath(), 1, null, false,
                             null).isDir) {
                         currentPath = getRoot();
                     }
 
                     DropboxAPI.Entry dirEntry =
-                            dbApi.metadata(currentPath.path, 0, null, true,
+                            dbApi.metadata(currentPath.getFullPath(), 0, null, true,
                                     null);
-                    for (DropboxAPI.Entry entry : dirEntry.contents) {
+                    for (DropboxAPI.Entry entry : dirEntry.contents)
+                    {
                         if ((mode == MODE_FILE || mode == MODE_FILE_AND_DIR) ||
-                            entry.isDir) {
-                            files.add(entry);
+                            entry.isDir)
+                        {
+                            files.add(new DropboxFileSystemObject(entry));
                         }
                     }
                 } catch (DropboxException e) {
-                }*/
+                }
 
                 return files;
             }

@@ -3,27 +3,26 @@ package com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import java.io.File;
+import com.dropbox.client2.DropboxAPI;
 
 /**
- * Created by Pristalov Pavel on 15.01.2015 for NoNonsense-FilePicker.
+ * Created by Pristalov Pavel on 21.01.2015 for NoNonsense-FilePicker.
  */
-public class LocalFileSystemObject
-        implements FileSystemObjectInterface
+public class DropboxFileSystemObject implements FileSystemObjectInterface
 {
-    private File file;
+    private DropboxAPI.Entry file;
 
-    public void setFile(File file)
-    {
-        this.file = file;
-    }
-
-    public File getFile()
+    public DropboxAPI.Entry getFile()
     {
         return file;
     }
 
-    public LocalFileSystemObject(File file)
+    public void setFile(DropboxAPI.Entry file)
+    {
+        this.file = file;
+    }
+
+    public DropboxFileSystemObject(DropboxAPI.Entry file)
     {
         this.file = file;
     }
@@ -36,7 +35,7 @@ public class LocalFileSystemObject
     @Override
     public String getName()
     {
-        return file != null ? file.getName() : "" ;
+        return file != null ? file.fileName() : "";
     }
 
     /**
@@ -45,11 +44,12 @@ public class LocalFileSystemObject
      * @return path to object
      */
     @Override
-    public LocalFileSystemObject getDir(String path)
+    public DropboxFileSystemObject getDir(String path)
     {
-        return !TextUtils.isEmpty(path) ?
-                new LocalFileSystemObject(new File(path)) :
-                null;
+        final DropboxAPI.Entry entry = new DropboxAPI.Entry();
+        entry.path = path;
+        entry.isDir = true;
+        return new DropboxFileSystemObject(entry);
     }
 
     /**
@@ -60,7 +60,7 @@ public class LocalFileSystemObject
     @Override
     public String getFullPath()
     {
-        return file != null ? file.getPath() : "";
+        return file != null ? file.path : "/";
     }
 
     /**
@@ -71,7 +71,7 @@ public class LocalFileSystemObject
     @Override
     public boolean isDir()
     {
-        return file != null ? file.isDirectory() : false;
+        return file != null ? file.isDir : false;
     }
 
     /**
@@ -82,7 +82,7 @@ public class LocalFileSystemObject
     @Override
     public boolean isFile()
     {
-        return file != null ? file.isFile() : false ;
+        return file != null ? !file.isDir : false;
     }
 
     /**
@@ -93,7 +93,7 @@ public class LocalFileSystemObject
     @Override
     public Uri toUri()
     {
-        return file != null ? Uri.fromFile(file) : null;
+        return new Uri.Builder().scheme("dropbox").path(getFullPath()).build();
     }
 
     /**
@@ -105,10 +105,20 @@ public class LocalFileSystemObject
     {
         if(file == null) return null;
 
+        DropboxAPI.Entry from = new DropboxAPI.Entry();
 
+        // Take care of a slight limitation in Dropbox code:
+        if (getFullPath().length() > 1 && getFullPath().endsWith("/"))
+        {
+            file.path = getFullPath().substring(0, getFullPath().length() - 1);
+        }
 
-        return file.getParentFile() != null ?
-                new LocalFileSystemObject(file.getParentFile()) :
-                this;
+        String parent = file.parentPath();
+        if (TextUtils.isEmpty(parent))
+        {
+            parent = "/";
+        }
+
+        return getDir(parent);
     }
 }

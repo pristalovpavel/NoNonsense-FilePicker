@@ -18,7 +18,6 @@
 package com.nononsenseapps.filepicker;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -29,7 +28,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -192,7 +190,7 @@ public abstract class AbstractFilePickerFragment extends ListFragment
         currentDirView = (TextView) view.findViewById(R.id.current_dir);
         // Restore state
         if (currentPath != null) {
-            currentDirView.setText(currentPath.getPath());
+            currentDirView.setText(currentPath.getFullPath());
         }
 
         return view;
@@ -368,13 +366,6 @@ public abstract class AbstractFilePickerFragment extends ListFragment
     }
 
     /**
-     * Convert the path to the type used.
-     *
-     * @param path
-     */
-    //protected abstract T getPath(final String path);
-
-    /**
      * Get the root path (lowest allowed).
      */
     protected abstract FileSystemObjectInterface getRoot();
@@ -474,7 +465,7 @@ public abstract class AbstractFilePickerFragment extends ListFragment
         //adapter.sort(comparator);
         setListAdapter(adapter);
         adapter.notifyDataSetChanged();
-        currentDirView.setText(currentPath.getPath());
+        currentDirView.setText(currentPath.getFullPath());
     }
 
     /**
@@ -568,7 +559,24 @@ public abstract class AbstractFilePickerFragment extends ListFragment
     /**
      * @return a comparator that can sort the items alphabetically
      */
-    protected abstract Comparator<FileSystemObjectInterface> getComparator();
+    protected Comparator<FileSystemObjectInterface> getComparator()
+    {
+        return new Comparator<FileSystemObjectInterface>() {
+            @Override
+            public int compare(final FileSystemObjectInterface lhs,
+                               final FileSystemObjectInterface rhs)
+            {
+                if (lhs.isDir() && !rhs.isDir()) {
+                    return -1;
+                } else if (rhs.isDir() && !lhs.isDir()) {
+                    return 1;
+                } else {
+                    return lhs.getName().toLowerCase().compareTo(rhs.getName()
+                            .toLowerCase());
+                }
+            }
+        };
+    }
 
     /**
      * @param path

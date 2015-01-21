@@ -4,16 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.FileSystemObjectInterface;
-import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.LocalFileSystemObject;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -21,7 +18,6 @@ import java.util.List;
  */
 public class FileArrayAdapter extends BaseAdapter
 {
-    private Context context;
     private LayoutInflater inflater;
     private List<FileSystemObjectInterface> data;
 
@@ -31,7 +27,6 @@ public class FileArrayAdapter extends BaseAdapter
 
     public FileArrayAdapter(Context context, List<FileSystemObjectInterface> data)
     {
-        this.context = context;
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.data = data;
     }
@@ -121,16 +116,13 @@ public class FileArrayAdapter extends BaseAdapter
         }
         else holder = (ViewHolder) convertView.getTag();
 
-        if(getItem(position) instanceof LocalFileSystemObject)
+        FileSystemObjectInterface obj = getItem(position);
+
+        holder.image.setVisibility(obj.isDir() ? View.VISIBLE : View.GONE);
+        holder.title.setText(obj.getName());
+        if(holder.title instanceof CheckedTextView)
         {
-            LocalFileSystemObject obj = (LocalFileSystemObject) getItem(position);
 
-            holder.image.setVisibility(obj.isDir() ? View.VISIBLE : View.GONE);
-            holder.title.setText(obj.getName());
-            if(holder.title instanceof CheckedTextView)
-            {
-
-            }
         }
 
         return convertView;
