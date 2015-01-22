@@ -72,7 +72,7 @@ public abstract class AbstractFilePickerFragment extends ListFragment
     public static final String KEY_ALLOW_MULTIPLE = "KEY_ALLOW_MULTIPLE";
     // Used for saving state.
     protected static final String KEY_CURRENT_PATH = "KEY_CURRENT PATH";
-    protected final DefaultHashMap<Integer, Boolean> checkedItems;
+    //protected final DefaultHashMap<Integer, Boolean> checkedItems;
     protected FileSystemObjectInterface currentPath = null;
     protected boolean allowCreateDir = false;
     protected boolean allowMultiple = false;
@@ -87,7 +87,7 @@ public abstract class AbstractFilePickerFragment extends ListFragment
      * fragment (e.g. upon screen orientation changes).
      */
     public AbstractFilePickerFragment() {
-        checkedItems = new DefaultHashMap<Integer, Boolean>(false);
+        //checkedItems = new DefaultHashMap<Integer, Boolean>(false);
     }
 
     /**
@@ -137,6 +137,7 @@ public abstract class AbstractFilePickerFragment extends ListFragment
                             return;
                         }
 
+                        List<FileSystemObjectInterface> checkedItems = adapter.getCheckedItems();
                         // Some invalid cases first
                         if (allowMultiple && checkedItems.isEmpty()) {
                             Toast.makeText(getActivity(),
@@ -152,7 +153,7 @@ public abstract class AbstractFilePickerFragment extends ListFragment
                         }
 
                         if (allowMultiple) {
-                            listener.onFilesPicked(toUri(getCheckedItems()));
+                            listener.onFilesPicked(toUri(checkedItems));
                         } else {
                             listener.onFilePicked(currentPath.toUri());
                         }
@@ -209,18 +210,18 @@ public abstract class AbstractFilePickerFragment extends ListFragment
     /**
      * @return the selected files. Can be empty.
      */
-    protected List<FileSystemObjectInterface> getCheckedItems()
-    {
-        final ArrayList<FileSystemObjectInterface> files = new ArrayList<FileSystemObjectInterface>();
-        for (int pos : checkedItems.keySet())
-        {
-            if (checkedItems.get(pos))
-            {
-                files.add(adapter.getItem(pos));
-            }
-        }
-        return files;
-    }
+//    protected List<FileSystemObjectInterface> getCheckedItems()
+//    {
+//        final ArrayList<FileSystemObjectInterface> files = new ArrayList<FileSystemObjectInterface>();
+//        for (int pos : checkedItems.keySet())
+//        {
+//            if (checkedItems.get(pos))
+//            {
+//                files.add(adapter.getItem(pos));
+//            }
+//        }
+//        return files;
+//    }
 
     /**
      * Convert the path to a URI for the return intent
@@ -278,14 +279,14 @@ public abstract class AbstractFilePickerFragment extends ListFragment
             return;
         }
 
-        final boolean oldVal = checkedItems.get(position);
+        final boolean oldVal = adapter.isChecked(position);
 
         if (!allowMultiple)
         {
-            checkedItems.clear();
+            adapter.clearChecked();
         }
 
-        checkedItems.put(position, !oldVal);
+        adapter.setChecked(position, !oldVal);
         // Redraw the items
         getListView().invalidateViews();
     }
@@ -459,7 +460,7 @@ public abstract class AbstractFilePickerFragment extends ListFragment
             comparator = getComparator();
         }*/
 
-        checkedItems.clear();
+        //adapter.clearChecked();
 
         //for(T item : data) adapter.add(item);
         //adapter.sort(comparator);
@@ -616,16 +617,16 @@ public abstract class AbstractFilePickerFragment extends ListFragment
         public void onCancelled();
     }
 
-    public class DefaultHashMap<K, V> extends HashMap<K, V> {
-        protected final V defaultValue;
-
-        public DefaultHashMap(final V defaultValue) {
-            this.defaultValue = defaultValue;
-        }
-
-        @Override
-        public V get(Object k) {
-            return containsKey(k) ? super.get(k) : defaultValue;
-        }
-    }
+//    public class DefaultHashMap<K, V> extends HashMap<K, V> {
+//        protected final V defaultValue;
+//
+//        public DefaultHashMap(final V defaultValue) {
+//            this.defaultValue = defaultValue;
+//        }
+//
+//        @Override
+//        public V get(Object k) {
+//            return containsKey(k) ? super.get(k) : defaultValue;
+//        }
+//    }
 }

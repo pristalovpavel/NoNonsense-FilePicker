@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.FileSystemObjectInterface;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -20,6 +22,7 @@ public class FileArrayAdapter extends BaseAdapter
 {
     private LayoutInflater inflater;
     private List<FileSystemObjectInterface> data;
+    protected DefaultHashMap<Integer, Boolean> checkedItems;
 
     private static final int WRONG_CODE = -1;
     private static final int FILE_CODE = 0;
@@ -27,8 +30,9 @@ public class FileArrayAdapter extends BaseAdapter
 
     public FileArrayAdapter(Context context, List<FileSystemObjectInterface> data)
     {
-        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.data = data;
+        checkedItems = new DefaultHashMap<Integer, Boolean>(false);
     }
 
     /**
@@ -72,8 +76,8 @@ public class FileArrayAdapter extends BaseAdapter
     {
         FileSystemObjectInterface obj = getItem(position);
 
-        if(obj.isDir()) return DIRECTORY_CODE;
-        else if(obj.isFile()) return FILE_CODE;
+        if (obj.isDir()) return DIRECTORY_CODE;
+        else if (obj.isFile()) return FILE_CODE;
 
         return WRONG_CODE;
     }
@@ -108,7 +112,7 @@ public class FileArrayAdapter extends BaseAdapter
     {
         ViewHolder holder;
 
-        if(convertView == null)
+        if (convertView == null)
         {
             convertView = inflater.inflate(getLayout(position), parent, false);
             holder = new ViewHolder(convertView);
@@ -120,12 +124,40 @@ public class FileArrayAdapter extends BaseAdapter
 
         holder.image.setVisibility(obj.isDir() ? View.VISIBLE : View.GONE);
         holder.title.setText(obj.getName());
-        if(holder.title instanceof CheckedTextView)
+        if (holder.title instanceof CheckedTextView)
         {
-
+            ((CheckedTextView) holder.title).setChecked(checkedItems.get(position));
         }
 
         return convertView;
+    }
+
+    protected List<FileSystemObjectInterface> getCheckedItems()
+    {
+        final ArrayList<FileSystemObjectInterface> files = new ArrayList<FileSystemObjectInterface>();
+        for (int pos : checkedItems.keySet())
+        {
+            if (checkedItems.get(pos))
+            {
+                files.add(getItem(pos));
+            }
+        }
+        return files;
+    }
+
+    public boolean isChecked(int position)
+    {
+        return checkedItems.get(position);
+    }
+
+    public void setChecked(int position, boolean value)
+    {
+        checkedItems.put(position, value);
+    }
+
+    public void clearChecked()
+    {
+        checkedItems.clear();
     }
 
     public static class ViewHolder
@@ -142,7 +174,7 @@ public class FileArrayAdapter extends BaseAdapter
 
     private int getLayout(int position)
     {
-        switch(getItemViewType(position))
+        switch (getItemViewType(position))
         {
             case DIRECTORY_CODE:
                 return R.layout.filepicker_listitem_dir;
@@ -150,5 +182,22 @@ public class FileArrayAdapter extends BaseAdapter
             default:
                 return R.layout.filepicker_listitem_checkable;
         }
+    }
+
+    public class DefaultHashMap<K, V> extends HashMap<K, V>
+    {
+        protected final V defaultValue;
+
+        public DefaultHashMap(final V defaultValue)
+        {
+            this.defaultValue = defaultValue;
+        }
+
+        @Override
+        public V get(Object k)
+        {
+            return containsKey(k) ? super.get(k) : defaultValue;
+        }
+
     }
 }
