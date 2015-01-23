@@ -31,7 +31,7 @@ import android.widget.TextView;
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.nononsenseapps.filepicker.AbstractFilePickerFragment;
-import com.nononsenseapps.filepicker.FilePickerActivity;
+import com.nononsenseapps.filepicker.LocalFilePickerActivity;
 import com.nononsenseapps.filepicker.sample.dropbox.DropboxFilePickerActivity;
 import com.nononsenseapps.filepicker.sample.dropbox.DropboxSyncHelper;
 
@@ -66,9 +66,9 @@ public class NoNonsenseFilePicker extends Activity {
                         //        FilePickerActivity.class);
                         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
 
-                        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE,
+                        i.putExtra(LocalFilePickerActivity.EXTRA_ALLOW_MULTIPLE,
                                 checkAllowMultiple.isChecked());
-                        i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR,
+                        i.putExtra(LocalFilePickerActivity.EXTRA_ALLOW_CREATE_DIR,
                                 checkAllowCreateDir.isChecked());
 
                         // What mode is selected
@@ -87,7 +87,7 @@ public class NoNonsenseFilePicker extends Activity {
                                 break;
                         }
 
-                        i.putExtra(FilePickerActivity.EXTRA_MODE, mode);
+                        i.putExtra(LocalFilePickerActivity.EXTRA_MODE, mode);
 
 
                         startActivityForResult(i, CODE_SD);
@@ -113,10 +113,10 @@ public class NoNonsenseFilePicker extends Activity {
                             Intent i = new Intent(NoNonsenseFilePicker.this,
                                     DropboxFilePickerActivity.class);
 
-                            i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE,
+                            i.putExtra(LocalFilePickerActivity.EXTRA_ALLOW_MULTIPLE,
                                     checkAllowMultiple.isChecked());
                             i.putExtra(
-                                    FilePickerActivity.EXTRA_ALLOW_CREATE_DIR,
+                                    LocalFilePickerActivity.EXTRA_ALLOW_CREATE_DIR,
                                     checkAllowCreateDir.isChecked());
 
                             // What mode is selected
@@ -135,7 +135,7 @@ public class NoNonsenseFilePicker extends Activity {
                                     break;
                             }
 
-                            i.putExtra(FilePickerActivity.EXTRA_MODE, mode);
+                            i.putExtra(LocalFilePickerActivity.EXTRA_MODE, mode);
 
                             startActivityForResult(i, CODE_DB);
                         }
@@ -184,7 +184,7 @@ public class NoNonsenseFilePicker extends Activity {
             Intent data) {
         if ((CODE_SD == requestCode || CODE_DB == requestCode) &&
             resultCode == Activity.RESULT_OK) {
-            if (data.getBooleanExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE,
+            if (data.getBooleanExtra(LocalFilePickerActivity.EXTRA_ALLOW_MULTIPLE,
                     false)) {
 
                 /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -201,7 +201,7 @@ public class NoNonsenseFilePicker extends Activity {
                     textView.setText(sb.toString());
                 } else {*/
                     ArrayList<String> paths = data.getStringArrayListExtra(
-                            FilePickerActivity.EXTRA_PATHS);
+                            LocalFilePickerActivity.EXTRA_PATHS);
                     StringBuilder sb = new StringBuilder();
 
                     if (paths != null) {

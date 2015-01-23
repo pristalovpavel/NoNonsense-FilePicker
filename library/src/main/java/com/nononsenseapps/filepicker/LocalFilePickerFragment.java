@@ -31,9 +31,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class FilePickerFragment extends AbstractFilePickerFragment
+public class LocalFilePickerFragment extends AbstractFilePickerFragment
 {
-    public FilePickerFragment() {}
+    public LocalFilePickerFragment()
+    {}
 
     /**
      * Return the path to the parent directory. Should return the root if
@@ -58,8 +59,15 @@ public class FilePickerFragment extends AbstractFilePickerFragment
      * Get the root path (lowest allowed).
      */
     @Override
-    protected FileSystemObjectInterface getRoot() {
+    protected FileSystemObjectInterface getRoot()
+    {
         return new LocalFileSystemObject(Environment.getExternalStorageDirectory());
+    }
+
+    @Override
+    protected void initCurrentPath(String path)
+    {
+        ((LocalFileSystemObject)currentPath).setPath(path);
     }
 
     /**
@@ -120,11 +128,13 @@ public class FilePickerFragment extends AbstractFilePickerFragment
              * Handles a request to start the Loader.
              */
             @Override
-            protected void onStartLoading() {
+            protected void onStartLoading()
+            {
                 super.onStartLoading();
 
                 // handle if directory does not exist. Fall back to root.
-                if (currentPath == null || !currentPath.isDir()) {
+                if (currentPath == null || !currentPath.isDir())
+                {
                     currentPath = getRoot();
                 }
 
@@ -132,11 +142,11 @@ public class FilePickerFragment extends AbstractFilePickerFragment
                 fileObserver = new FileObserver(currentPath.getFullPath(),
                         FileObserver.CREATE |
                                 FileObserver.DELETE
-                                | FileObserver.MOVED_FROM | FileObserver.MOVED_TO
-                ) {
-
+                                | FileObserver.MOVED_FROM | FileObserver.MOVED_TO)
+                {
                     @Override
-                    public void onEvent(int event, String path) {
+                    public void onEvent(int event, String path)
+                    {
                         // Reload
                         onContentChanged();
                     }
@@ -150,7 +160,8 @@ public class FilePickerFragment extends AbstractFilePickerFragment
              * Handles a request to completely reset the Loader.
              */
             @Override
-            protected void onReset() {
+            protected void onReset()
+            {
                 super.onReset();
 
                 // Stop watching

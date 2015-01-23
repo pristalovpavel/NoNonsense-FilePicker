@@ -161,9 +161,11 @@ public abstract class AbstractFilePickerFragment extends ListFragment
                 });
 
         view.findViewById(R.id.button_go_parent)
-                .setOnClickListener(new View.OnClickListener() {
+                .setOnClickListener(new View.OnClickListener()
+                {
                             @Override
-                            public void onClick(final View v) {
+                            public void onClick(final View v)
+                            {
                                 // Go to parent
                                 currentPath = currentPath.getParent();
                                 refresh();
@@ -326,7 +328,9 @@ public abstract class AbstractFilePickerFragment extends ListFragment
                 // TODO need to operate with FileSystemObjectInterface here!
                 currentPath =
                         new LocalFileSystemObject(new File(savedInstanceState.getString(KEY_CURRENT_PATH)));
-            } else if (getArguments() != null) {
+            }
+            else if (getArguments() != null)
+            {
                 mode = getArguments().getInt(KEY_MODE, mode);
                 allowCreateDir = getArguments()
                         .getBoolean(KEY_ALLOW_DIR_CREATE, allowCreateDir);
@@ -352,9 +356,10 @@ public abstract class AbstractFilePickerFragment extends ListFragment
     }
 
     @Override
-    public void onSaveInstanceState(Bundle b) {
+    public void onSaveInstanceState(Bundle b)
+    {
         super.onSaveInstanceState(b);
-        b.putString(KEY_CURRENT_PATH, currentPath.toString());
+        b.putString(KEY_CURRENT_PATH, currentPath.getFullPath());
         b.putBoolean(KEY_ALLOW_MULTIPLE, allowMultiple);
         b.putBoolean(KEY_ALLOW_DIR_CREATE, allowCreateDir);
         b.putInt(KEY_MODE, mode);
@@ -370,6 +375,8 @@ public abstract class AbstractFilePickerFragment extends ListFragment
      * Get the root path (lowest allowed).
      */
     protected abstract FileSystemObjectInterface getRoot();
+
+    protected abstract void initCurrentPath(String currentPath);
 
     /**
      * Refreshes the list. Call this when current path changes.

@@ -48,4 +48,10 @@ public interface FileSystemObjectInterface
      * from is root.     *
      */
     public FileSystemObjectInterface getParent();
+
+    /**
+     * Inits inner file object with the specific path
+     * @param path String with path in current file system
+     */
+    public void setPath(String path);
 }

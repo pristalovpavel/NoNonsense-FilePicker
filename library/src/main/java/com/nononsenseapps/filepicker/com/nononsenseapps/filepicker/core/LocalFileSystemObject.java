@@ -105,10 +105,33 @@ public class LocalFileSystemObject
     {
         if(file == null) return null;
 
+        if (file.getParentFile() != null)
+        {
+            if (file.isFile())
+            {
+                file = file.getParentFile();
+                return new LocalFileSystemObject(file.getParentFile());
+            }
+            else
+            {
+                return new LocalFileSystemObject(file.getParentFile());
+            }
+        }
+        else
+        {
+            return this;
+        }
+    }
 
-
-        return file.getParentFile() != null ?
-                new LocalFileSystemObject(file.getParentFile()) :
-                this;
+    /**
+     * Inits inner file object with the specific path
+     *
+     * @param path String with path in current file system
+     */
+    @Override
+    public void setPath(String path)
+    {
+        if(!TextUtils.isEmpty(path))
+            file = new File(path);
     }
 }

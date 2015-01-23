@@ -5,6 +5,8 @@ import android.text.TextUtils;
 
 import com.dropbox.client2.DropboxAPI;
 
+import java.io.File;
+
 /**
  * Created by Pristalov Pavel on 21.01.2015 for NoNonsense-FilePicker.
  */
@@ -105,8 +107,6 @@ public class DropboxFileSystemObject implements FileSystemObjectInterface
     {
         if(file == null) return null;
 
-        DropboxAPI.Entry from = new DropboxAPI.Entry();
-
         // Take care of a slight limitation in Dropbox code:
         if (getFullPath().length() > 1 && getFullPath().endsWith("/"))
         {
@@ -120,5 +120,20 @@ public class DropboxFileSystemObject implements FileSystemObjectInterface
         }
 
         return getDir(parent);
+    }
+
+    /**
+     * Inits inner file object with the specific path
+     *
+     * @param path String with path in current file system
+     */
+    @Override
+    public void setPath(String path)
+    {
+        if(!TextUtils.isEmpty(path))
+        {
+            file = new DropboxAPI.Entry();
+            file.path = path;
+        }
     }
 }

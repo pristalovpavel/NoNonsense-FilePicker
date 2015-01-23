@@ -130,6 +130,12 @@ public class DropboxFilePickerFragment
         return new DropboxFileSystemObject(entry);
     }
 
+    @Override
+    protected void initCurrentPath(String path)
+    {
+        ((DropboxFileSystemObject)currentPath).setPath(path);
+    }
+
     /*@Override
     protected Uri toUri(final DropboxAPI.Entry file) {
         return new Uri.Builder().scheme("dropbox").path(file.path).build();

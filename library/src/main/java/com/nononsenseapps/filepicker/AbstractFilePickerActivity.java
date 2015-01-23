@@ -85,7 +85,8 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
     protected boolean allowMultiple = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setupFauxDialog();
         super.onCreate(savedInstanceState);
@@ -122,7 +123,8 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
         setResult(Activity.RESULT_CANCELED);
     }
 
-    protected void setupFauxDialog() {
+    protected void setupFauxDialog()
+    {
         // Check if this should be a dialog
         TypedValue tv = new TypedValue();
         if (!getTheme().resolveAttribute(R.attr.isDialog, tv, true) ||
@@ -144,7 +146,8 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
         getWindow().setAttributes(params);
     }
 
-    protected void setupActionBar() {
+    protected void setupActionBar()
+    {
         getSupportActionBar().setTitle(getWindowTitle());
     }
 
@@ -155,9 +158,11 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
     /**
      * @return the title to apply to the window
      */
-    protected String getWindowTitle() {
+    protected String getWindowTitle()
+    {
         final int res;
-        switch (mode) {
+        switch (mode)
+        {
             case AbstractFilePickerFragment.MODE_DIR:
                 res = R.plurals.select_dir;
                 break;
@@ -171,9 +176,12 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
         }
 
         final int count;
-        if (allowMultiple) {
+        if (allowMultiple)
+        {
             count = 99;
-        } else {
+        }
+        else
+        {
             count = 1;
         }
 
@@ -181,12 +189,14 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
     }
 
     @Override
-    public void onSaveInstanceState(Bundle b) {
+    public void onSaveInstanceState(Bundle b)
+    {
         super.onSaveInstanceState(b);
     }
 
     @Override
-    public void onFilePicked(final Uri file) {
+    public void onFilePicked(final Uri file)
+    {
         Intent i = new Intent();
         i.setData(file);
         setResult(Activity.RESULT_OK, i);
@@ -194,7 +204,8 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
     }
 
     @Override
-    public void onFilesPicked(final List<Uri> files) {
+    public void onFilesPicked(final List<Uri> files)
+    {
         Intent i = new Intent();
         i.putExtra(EXTRA_ALLOW_MULTIPLE, true);
 
@@ -210,11 +221,9 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
             }
             i.setClipData(clip);
         } else {*/
-            ArrayList<String> paths = new ArrayList<String>();
-            for (Uri file : files) {
-                paths.add(file.toString());
-            }
-            i.putStringArrayListExtra(EXTRA_PATHS, paths);
+        ArrayList<String> paths = new ArrayList<String>();
+        for (Uri file : files) {paths.add(file.toString());}
+        i.putStringArrayListExtra(EXTRA_PATHS, paths);
         //}
 
         setResult(Activity.RESULT_OK, i);
@@ -222,7 +231,8 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
     }
 
     @Override
-    public void onCancelled() {
+    public void onCancelled()
+    {
         setResult(Activity.RESULT_CANCELED);
         finish();
     }
