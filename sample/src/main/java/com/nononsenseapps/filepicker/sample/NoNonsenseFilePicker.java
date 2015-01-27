@@ -32,6 +32,7 @@ import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.nononsenseapps.filepicker.AbstractFilePickerFragment;
 import com.nononsenseapps.filepicker.LocalFilePickerActivity;
+import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.Extras;
 import com.nononsenseapps.filepicker.sample.dropbox.DropboxFilePickerActivity;
 import com.nononsenseapps.filepicker.sample.dropbox.DropboxSyncHelper;
 
@@ -66,28 +67,27 @@ public class NoNonsenseFilePicker extends Activity {
                         //        FilePickerActivity.class);
                         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
 
-                        i.putExtra(LocalFilePickerActivity.EXTRA_ALLOW_MULTIPLE,
+                        i.putExtra(Extras.EXTRA_ALLOW_MULTIPLE,
                                 checkAllowMultiple.isChecked());
-                        i.putExtra(LocalFilePickerActivity.EXTRA_ALLOW_CREATE_DIR,
+                        i.putExtra(Extras.EXTRA_ALLOW_CREATE_DIR,
                                 checkAllowCreateDir.isChecked());
 
                         // What mode is selected
-                        final int mode;
+                        final AbstractFilePickerFragment.SelectionMode mode;
                         switch (radioGroup.getCheckedRadioButtonId()) {
                             case R.id.radioDir:
-                                mode = AbstractFilePickerFragment.MODE_DIR;
+                                mode = AbstractFilePickerFragment.SelectionMode.MODE_DIR;
                                 break;
                             case R.id.radioFilesAndDirs:
-                                mode =
-                                        AbstractFilePickerFragment.MODE_FILE_AND_DIR;
+                                mode = AbstractFilePickerFragment.SelectionMode.MODE_FILE_AND_DIR;
                                 break;
                             case R.id.radioFile:
                             default:
-                                mode = AbstractFilePickerFragment.MODE_FILE;
+                                mode = AbstractFilePickerFragment.SelectionMode.MODE_FILE;
                                 break;
                         }
 
-                        i.putExtra(LocalFilePickerActivity.EXTRA_MODE, mode);
+                        i.putExtra(Extras.EXTRA_MODE, mode.ordinal());
 
 
                         startActivityForResult(i, CODE_SD);
@@ -113,29 +113,28 @@ public class NoNonsenseFilePicker extends Activity {
                             Intent i = new Intent(NoNonsenseFilePicker.this,
                                     DropboxFilePickerActivity.class);
 
-                            i.putExtra(LocalFilePickerActivity.EXTRA_ALLOW_MULTIPLE,
+                            i.putExtra(Extras.EXTRA_ALLOW_MULTIPLE,
                                     checkAllowMultiple.isChecked());
                             i.putExtra(
-                                    LocalFilePickerActivity.EXTRA_ALLOW_CREATE_DIR,
+                                    Extras.EXTRA_ALLOW_CREATE_DIR,
                                     checkAllowCreateDir.isChecked());
 
                             // What mode is selected
-                            final int mode;
+                            final AbstractFilePickerFragment.SelectionMode mode;
                             switch (radioGroup.getCheckedRadioButtonId()) {
                                 case R.id.radioDir:
-                                    mode = AbstractFilePickerFragment.MODE_DIR;
+                                    mode = AbstractFilePickerFragment.SelectionMode.MODE_DIR;
                                     break;
                                 case R.id.radioFilesAndDirs:
-                                    mode =
-                                            AbstractFilePickerFragment.MODE_FILE_AND_DIR;
+                                    mode = AbstractFilePickerFragment.SelectionMode.MODE_FILE_AND_DIR;
                                     break;
                                 case R.id.radioFile:
                                 default:
-                                    mode = AbstractFilePickerFragment.MODE_FILE;
+                                    mode = AbstractFilePickerFragment.SelectionMode.MODE_FILE;
                                     break;
                             }
 
-                            i.putExtra(LocalFilePickerActivity.EXTRA_MODE, mode);
+                            i.putExtra(Extras.EXTRA_MODE, mode.ordinal());
 
                             startActivityForResult(i, CODE_DB);
                         }
@@ -184,7 +183,7 @@ public class NoNonsenseFilePicker extends Activity {
             Intent data) {
         if ((CODE_SD == requestCode || CODE_DB == requestCode) &&
             resultCode == Activity.RESULT_OK) {
-            if (data.getBooleanExtra(LocalFilePickerActivity.EXTRA_ALLOW_MULTIPLE,
+            if (data.getBooleanExtra(Extras.EXTRA_ALLOW_MULTIPLE,
                     false)) {
 
                 /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -201,7 +200,7 @@ public class NoNonsenseFilePicker extends Activity {
                     textView.setText(sb.toString());
                 } else {*/
                     ArrayList<String> paths = data.getStringArrayListExtra(
-                            LocalFilePickerActivity.EXTRA_PATHS);
+                            Extras.EXTRA_PATHS);
                     StringBuilder sb = new StringBuilder();
 
                     if (paths != null) {

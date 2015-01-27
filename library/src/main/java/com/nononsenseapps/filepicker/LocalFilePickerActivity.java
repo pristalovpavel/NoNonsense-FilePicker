@@ -31,7 +31,7 @@ public class LocalFilePickerActivity extends AbstractFilePickerActivity<File>
 
     @Override
     protected AbstractFilePickerFragment getFragment(
-            final String startPath, final int mode, final boolean allowMultiple,
+            final String startPath, final AbstractFilePickerFragment.SelectionMode mode, final boolean allowMultiple,
             final boolean allowCreateDir)
     {
         AbstractFilePickerFragment fragment = new LocalFilePickerFragment();

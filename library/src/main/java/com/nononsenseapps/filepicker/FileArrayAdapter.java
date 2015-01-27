@@ -24,15 +24,17 @@ public class FileArrayAdapter extends BaseAdapter
     private List<FileSystemObjectInterface> data;
     protected DefaultHashMap<Integer, Boolean> checkedItems;
 
+    protected AbstractFilePickerFragment.SelectionMode selectionMode;
     private static final int WRONG_CODE = -1;
     private static final int FILE_CODE = 0;
     private static final int DIRECTORY_CODE = 1;
 
-    public FileArrayAdapter(Context context, List<FileSystemObjectInterface> data)
+    public FileArrayAdapter(Context context, List<FileSystemObjectInterface> data, AbstractFilePickerFragment.SelectionMode mode)
     {
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.data = data;
         checkedItems = new DefaultHashMap<Integer, Boolean>(false);
+        selectionMode = mode;
     }
 
     /**
@@ -172,15 +174,16 @@ public class FileArrayAdapter extends BaseAdapter
         }
     }
 
-    private int getLayout(int position)
+   private int getLayout(int position)
     {
-        switch (getItemViewType(position))
+        if(getItemViewType(position) == DIRECTORY_CODE &&
+                selectionMode == AbstractFilePickerFragment.SelectionMode.MODE_FILE)
         {
-            case DIRECTORY_CODE:
-                return R.layout.filepicker_listitem_dir;
-
-            default:
-                return R.layout.filepicker_listitem_checkable;
+            return R.layout.filepicker_listitem_dir;
+        }
+        else
+        {
+            return R.layout.filepicker_listitem_checkable;
         }
     }
 

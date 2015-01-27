@@ -83,44 +83,6 @@ public class DropboxFilePickerFragment
         }
     }
 
-    /*@Override
-    protected boolean isDir(final DropboxAPI.Entry file) {
-        return file.isDir;
-    }*/
-
-    /*@Override
-    protected DropboxAPI.Entry getParent(final DropboxAPI.Entry from) {
-        // Take care of a slight limitation in Dropbox code:
-        if (from.path.length() > 1 && from.path.endsWith("/")) {
-            from.path = from.path.substring(0, from.path.length() - 1);
-        }
-        String parent = from.parentPath();
-        if (TextUtils.isEmpty(parent)) {
-            parent = "/";
-        }
-
-        return getDir(parent);
-
-    }*/
-
-    /*@Override
-    protected DropboxAPI.Entry getDir(final String path) {
-        final DropboxAPI.Entry entry = new DropboxAPI.Entry();
-        entry.path = path;
-        entry.isDir = true;
-        return entry;
-    }*/
-
-    /*@Override
-    protected String getFullPath(final DropboxAPI.Entry file) {
-        return file.path;
-    }*/
-
-    /*@Override
-    protected String getName(final DropboxAPI.Entry file) {
-        return file.fileName();
-    }*/
-
     @Override
     protected /*DropboxAPI.Entry*/ DropboxFileSystemObject getRoot()
     {
@@ -136,39 +98,11 @@ public class DropboxFilePickerFragment
         ((DropboxFileSystemObject)currentPath).setPath(path);
     }
 
-    /*@Override
-    protected Uri toUri(final DropboxAPI.Entry file) {
-        return new Uri.Builder().scheme("dropbox").path(file.path).build();
-    }*/
-
-    /*@Override
-    protected Comparator<DropboxAPI.Entry> getComparator()
-    {
-        return new Comparator<DropboxAPI.Entry>()
-        {
-            @Override
-            public int compare(final DropboxAPI.Entry lhs,
-                    final DropboxAPI.Entry rhs) {
-                if (isDir(lhs) && !isDir(rhs)) {
-                    return -1;
-                } else if (isDir(rhs) && !isDir(lhs)) {
-                    return 1;
-                } else {
-                    return lhs.fileName().toLowerCase()
-                            .compareTo(rhs.fileName().toLowerCase());
-                }
-                return 0;
-            }
-        };
-    }
-    */
-
     @Override
     protected Loader<List<FileSystemObjectInterface>> getLoader()
     {
         return new AsyncTaskLoader<List<FileSystemObjectInterface>>(getActivity())
         {
-
             @Override
             public List<FileSystemObjectInterface> loadInBackground()
             {
@@ -186,7 +120,7 @@ public class DropboxFilePickerFragment
                                     null);
                     for (DropboxAPI.Entry entry : dirEntry.contents)
                     {
-                        if ((mode == MODE_FILE || mode == MODE_FILE_AND_DIR) ||
+                        if ((mode == SelectionMode.MODE_FILE || mode == SelectionMode.MODE_FILE_AND_DIR) ||
                             entry.isDir)
                         {
                             files.add(new DropboxFileSystemObject(entry));

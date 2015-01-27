@@ -33,6 +33,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.Extras;
 import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.FileSystemObjectInterface;
 import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.LocalFileSystemObject;
 
@@ -54,22 +55,26 @@ import java.util.List;
 public abstract class AbstractFilePickerFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<List<FileSystemObjectInterface>>,
         NewItemFragment.OnNewFolderListener,
-        AdapterView.OnItemLongClickListener {
+        AdapterView.OnItemLongClickListener
+{
+    public enum SelectionMode
+    {
+        MODE_FILE,
+        MODE_DIR,
+        MODE_FILE_AND_DIR
+    }
 
     // The different preset modes of operation. This impacts the behaviour
     // and possible actions in the UI.
-    public static final int MODE_FILE = 0;
-    protected int mode = MODE_FILE;
-    public static final int MODE_DIR = 1;
-    public static final int MODE_FILE_AND_DIR = 2;
+    protected SelectionMode mode = SelectionMode.MODE_FILE;
     // Where to display on open.
-    public static final String KEY_START_PATH = "KEY_START_PATH";
+    //public static final String KEY_START_PATH = "KEY_START_PATH";
     // See MODE_XXX constants above for possible values
-    public static final String KEY_MODE = "KEY_MODE";
+    //public static final String KEY_MODE = "KEY_MODE";
     // If it should be possible to create directories. Only valid with MODE_DIR
-    public static final String KEY_ALLOW_DIR_CREATE = "KEY_ALLOW_DIR_CREATE";
+    //public static final String KEY_ALLOW_DIR_CREATE = "KEY_ALLOW_DIR_CREATE";
     // Allow multiple items to be selected.
-    public static final String KEY_ALLOW_MULTIPLE = "KEY_ALLOW_MULTIPLE";
+    //public static final String KEY_ALLOW_MULTIPLE = "KEY_ALLOW_MULTIPLE";
     // Used for saving state.
     protected static final String KEY_CURRENT_PATH = "KEY_CURRENT PATH";
     //protected final DefaultHashMap<Integer, Boolean> checkedItems;
@@ -98,15 +103,15 @@ public abstract class AbstractFilePickerFragment extends ListFragment
      * @param allowMultiple
      * @param allowDirCreate
      */
-    public void setArgs(final String startPath, final int mode,
+    public void setArgs(final String startPath, final SelectionMode mode,
             final boolean allowMultiple, final boolean allowDirCreate) {
         Bundle b = new Bundle();
         if (startPath != null) {
-            b.putString(KEY_START_PATH, startPath);
+            b.putString(Extras.EXTRA_START_PATH, startPath);
         }
-        b.putBoolean(KEY_ALLOW_DIR_CREATE, allowDirCreate);
-        b.putBoolean(KEY_ALLOW_MULTIPLE, allowMultiple);
-        b.putInt(KEY_MODE, mode);
+        b.putBoolean(Extras.EXTRA_ALLOW_CREATE_DIR, allowDirCreate);
+        b.putBoolean(Extras.EXTRA_ALLOW_MULTIPLE, allowMultiple);
+        b.putInt(Extras.EXTRA_MODE, mode.ordinal());
         setArguments(b);
     }
 
@@ -145,7 +150,7 @@ public abstract class AbstractFilePickerFragment extends ListFragment
                                     Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        if (mode == MODE_FILE && currentPath.isDir()) {
+                        if (mode == SelectionMode.MODE_FILE && currentPath.isDir()) {
                             Toast.makeText(getActivity(),
                                     R.string.select_something_first,
                                     Toast.LENGTH_SHORT).show();
@@ -174,10 +179,10 @@ public abstract class AbstractFilePickerFragment extends ListFragment
 
         final View createDirView = view.findViewById(R.id.button_create_dir);
         // Only show the create dir button if configured to
-        createDirView.setVisibility((allowCreateDir && (mode == MODE_DIR)) ?
+        createDirView.setVisibility((allowCreateDir && (mode == SelectionMode.MODE_DIR)) ?
                                     View.VISIBLE :
                                     View.INVISIBLE);
-        createDirView.setEnabled((allowCreateDir && (mode == MODE_DIR)));
+        createDirView.setEnabled((allowCreateDir && (mode == SelectionMode.MODE_DIR)));
         createDirView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -209,37 +214,6 @@ public abstract class AbstractFilePickerFragment extends ListFragment
         return uris;
     }
 
-    /**
-     * @return the selected files. Can be empty.
-     */
-//    protected List<FileSystemObjectInterface> getCheckedItems()
-//    {
-//        final ArrayList<FileSystemObjectInterface> files = new ArrayList<FileSystemObjectInterface>();
-//        for (int pos : checkedItems.keySet())
-//        {
-//            if (checkedItems.get(pos))
-//            {
-//                files.add(adapter.getItem(pos));
-//            }
-//        }
-//        return files;
-//    }
-
-    /**
-     * Convert the path to a URI for the return intent
-     *
-     * @param path
-     * @return
-     */
-    //protected abstract Uri toUri(final T path);
-
-    /**
-     * Return the path to the parent directory. Should return the root if
-     * from is root.
-     *
-     */
-    //protected abstract T getParent(final T from);
-
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
@@ -262,13 +236,13 @@ public abstract class AbstractFilePickerFragment extends ListFragment
         final boolean checkable;
         if (data.isDir())
         {
-            checkable = ((mode == MODE_DIR && allowMultiple) ||
-                         (mode == MODE_FILE_AND_DIR && allowMultiple));
+            checkable = ((mode == SelectionMode.MODE_DIR && allowMultiple) ||
+                         (mode == SelectionMode.MODE_FILE_AND_DIR && allowMultiple));
         }
         else
         {
             // File
-            checkable = (mode != MODE_DIR);
+            checkable = (mode != SelectionMode.MODE_DIR);
         }
         return checkable;
     }
@@ -320,27 +294,29 @@ public abstract class AbstractFilePickerFragment extends ListFragment
         {
             if (savedInstanceState != null)
             {
-                mode = savedInstanceState.getInt(KEY_MODE, mode);
+                mode = SelectionMode.values()
+                        [savedInstanceState.getInt(Extras.EXTRA_MODE, SelectionMode.MODE_FILE.ordinal())];
                 allowCreateDir = savedInstanceState
-                        .getBoolean(KEY_ALLOW_DIR_CREATE, allowCreateDir);
+                        .getBoolean(Extras.EXTRA_ALLOW_CREATE_DIR, allowCreateDir);
                 allowMultiple = savedInstanceState
-                        .getBoolean(KEY_ALLOW_MULTIPLE, allowMultiple);
+                        .getBoolean(Extras.EXTRA_ALLOW_MULTIPLE, allowMultiple);
                 // TODO need to operate with FileSystemObjectInterface here!
                 currentPath =
                         new LocalFileSystemObject(new File(savedInstanceState.getString(KEY_CURRENT_PATH)));
             }
             else if (getArguments() != null)
             {
-                mode = getArguments().getInt(KEY_MODE, mode);
+                mode = SelectionMode.values()
+                        [getArguments().getInt(Extras.EXTRA_MODE, SelectionMode.MODE_FILE.ordinal())];
                 allowCreateDir = getArguments()
-                        .getBoolean(KEY_ALLOW_DIR_CREATE, allowCreateDir);
+                        .getBoolean(Extras.EXTRA_ALLOW_CREATE_DIR, allowCreateDir);
                 allowMultiple = getArguments()
-                        .getBoolean(KEY_ALLOW_MULTIPLE, allowMultiple);
-                if (getArguments().containsKey(KEY_START_PATH))
+                        .getBoolean(Extras.EXTRA_ALLOW_MULTIPLE, allowMultiple);
+                if (getArguments().containsKey(Extras.EXTRA_START_PATH))
                 {
                     // TODO need to operate with FileSystemObjectInterface here!
                     currentPath =
-                            new LocalFileSystemObject(new File(getArguments().getString(KEY_START_PATH)));
+                            new LocalFileSystemObject(new File(getArguments().getString(Extras.EXTRA_START_PATH)));
                 }
             }
 
@@ -360,9 +336,9 @@ public abstract class AbstractFilePickerFragment extends ListFragment
     {
         super.onSaveInstanceState(b);
         b.putString(KEY_CURRENT_PATH, currentPath.getFullPath());
-        b.putBoolean(KEY_ALLOW_MULTIPLE, allowMultiple);
-        b.putBoolean(KEY_ALLOW_DIR_CREATE, allowCreateDir);
-        b.putInt(KEY_MODE, mode);
+        b.putBoolean(Extras.EXTRA_ALLOW_MULTIPLE, allowMultiple);
+        b.putBoolean(Extras.EXTRA_ALLOW_CREATE_DIR, allowCreateDir);
+        b.putInt(Extras.EXTRA_MODE, mode.ordinal());
     }
 
     @Override
@@ -460,7 +436,7 @@ public abstract class AbstractFilePickerFragment extends ListFragment
         }*/
         Collections.sort(data, getComparator());
 
-        adapter = new FileArrayAdapter(getActivity(), data);
+        adapter = new FileArrayAdapter(getActivity(), data, mode);
 
         /*if (comparator == null)
         {

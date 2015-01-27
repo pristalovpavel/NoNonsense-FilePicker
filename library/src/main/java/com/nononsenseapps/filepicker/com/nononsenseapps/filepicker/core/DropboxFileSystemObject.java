@@ -105,12 +105,9 @@ public class DropboxFileSystemObject implements FileSystemObjectInterface
     @Override
     public FileSystemObjectInterface getParent()
     {
-        if(file == null) return null;
-
-        // Take care of a slight limitation in Dropbox code:
-        if (getFullPath().length() > 1 && getFullPath().endsWith("/"))
+        if (file.path.length() > 1 && file.path.endsWith("/"))
         {
-            file.path = getFullPath().substring(0, getFullPath().length() - 1);
+            file.path = file.path.substring(0, file.path.length() - 1);
         }
 
         String parent = file.parentPath();

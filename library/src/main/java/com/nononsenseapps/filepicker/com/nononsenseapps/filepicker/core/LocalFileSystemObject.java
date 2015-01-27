@@ -108,14 +108,9 @@ public class LocalFileSystemObject
         if (file.getParentFile() != null)
         {
             if (file.isFile())
-            {
                 file = file.getParentFile();
-                return new LocalFileSystemObject(file.getParentFile());
-            }
-            else
-            {
-                return new LocalFileSystemObject(file.getParentFile());
-            }
+
+            return new LocalFileSystemObject(file.getParentFile());
         }
         else
         {

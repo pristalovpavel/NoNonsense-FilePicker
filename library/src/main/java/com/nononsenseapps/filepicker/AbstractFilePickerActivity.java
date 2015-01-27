@@ -32,6 +32,8 @@ import android.util.TypedValue;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.Extras;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,22 +67,18 @@ import java.util.List;
  */
 public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
         implements AbstractFilePickerFragment.OnFilePickedListener {
-    public static final String EXTRA_START_PATH =
-            "nononsense.intent" + ".START_PATH";
-    public static final String EXTRA_MODE = "nononsense.intent.MODE";
-    public static final String EXTRA_ALLOW_CREATE_DIR =
-            "nononsense.intent" + ".ALLOW_CREATE_DIR";
+    //public static final String EXTRA_START_PATH =
+    //        "nononsense.intent" + ".START_PATH";
+    //public static final String EXTRA_MODE = "nononsense.intent.MODE";
+//    public static final String EXTRA_ALLOW_CREATE_DIR =
+//            "nononsense.intent" + ".ALLOW_CREATE_DIR";
     // For compatibility
-    public static final String EXTRA_ALLOW_MULTIPLE =
-            "android.intent.extra" + ".ALLOW_MULTIPLE";
-    public static final String EXTRA_PATHS = "nononsense.intent.PATHS";
-    public static final int MODE_FILE = AbstractFilePickerFragment.MODE_FILE;
-    public static final int MODE_FILE_AND_DIR =
-            AbstractFilePickerFragment.MODE_FILE_AND_DIR;
-    public static final int MODE_DIR = AbstractFilePickerFragment.MODE_DIR;
+//    public static final String EXTRA_ALLOW_MULTIPLE =
+//            "android.intent.extra" + ".ALLOW_MULTIPLE";
+    //public static final String EXTRA_PATHS = "nononsense.intent.PATHS";
     protected static final String TAG = "filepicker_fragment";
     protected String startPath = null;
-    protected int mode = AbstractFilePickerFragment.MODE_FILE;
+    protected AbstractFilePickerFragment.SelectionMode mode = AbstractFilePickerFragment.SelectionMode.MODE_FILE;
     protected boolean allowCreateDir = false;
     protected boolean allowMultiple = false;
 
@@ -91,19 +89,19 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
         setupFauxDialog();
         super.onCreate(savedInstanceState);
 
-        setupActionBar();
-
         setContentView(R.layout.activity_filepicker);
 
         Intent intent = getIntent();
         if (intent != null) {
-            startPath = intent.getStringExtra(EXTRA_START_PATH);
-            mode = intent.getIntExtra(EXTRA_MODE, mode);
-            allowCreateDir = intent.getBooleanExtra(EXTRA_ALLOW_CREATE_DIR,
-                    allowCreateDir);
-            allowMultiple =
-                    intent.getBooleanExtra(EXTRA_ALLOW_MULTIPLE, allowMultiple);
+            startPath = intent.getStringExtra(Extras.EXTRA_START_PATH);
+            mode = AbstractFilePickerFragment.SelectionMode.values()
+                    [intent.getIntExtra(Extras.EXTRA_MODE,
+                    AbstractFilePickerFragment.SelectionMode.MODE_FILE.ordinal())];
+            allowCreateDir = intent.getBooleanExtra(Extras.EXTRA_ALLOW_CREATE_DIR, allowCreateDir);
+            allowMultiple = intent.getBooleanExtra(Extras.EXTRA_ALLOW_MULTIPLE, allowMultiple);
         }
+
+        setupActionBar();
 
         FragmentManager fm = getSupportFragmentManager();
         AbstractFilePickerFragment fragment =
@@ -152,7 +150,7 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
     }
 
     protected abstract AbstractFilePickerFragment getFragment(
-            final String startPath, final int mode, final boolean allowMultiple,
+            final String startPath, final AbstractFilePickerFragment.SelectionMode mode, final boolean allowMultiple,
             final boolean allowCreateDir);
 
     /**
@@ -163,13 +161,13 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
         final int res;
         switch (mode)
         {
-            case AbstractFilePickerFragment.MODE_DIR:
+            case MODE_DIR:
                 res = R.plurals.select_dir;
                 break;
-            case AbstractFilePickerFragment.MODE_FILE_AND_DIR:
+            case MODE_FILE_AND_DIR:
                 res = R.plurals.select_dir_or_file;
                 break;
-            case AbstractFilePickerFragment.MODE_FILE:
+            case MODE_FILE:
             default:
                 res = R.plurals.select_file;
                 break;
@@ -207,24 +205,11 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
     public void onFilesPicked(final List<Uri> files)
     {
         Intent i = new Intent();
-        i.putExtra(EXTRA_ALLOW_MULTIPLE, true);
+        i.putExtra(Extras.EXTRA_ALLOW_MULTIPLE, true);
 
-       /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            ClipData clip = null;
-            for (Uri file : files) {
-                if (clip == null) {
-                    clip = new ClipData("Paths", new String[]{},
-                            new ClipData.Item(file));
-                } else {
-                    clip.addItem(new ClipData.Item(file));
-                }
-            }
-            i.setClipData(clip);
-        } else {*/
         ArrayList<String> paths = new ArrayList<String>();
         for (Uri file : files) {paths.add(file.toString());}
-        i.putStringArrayListExtra(EXTRA_PATHS, paths);
-        //}
+        i.putStringArrayListExtra(Extras.EXTRA_PATHS, paths);
 
         setResult(Activity.RESULT_OK, i);
         finish();

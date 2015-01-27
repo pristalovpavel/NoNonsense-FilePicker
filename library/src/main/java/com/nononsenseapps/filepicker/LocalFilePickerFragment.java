@@ -37,25 +37,6 @@ public class LocalFilePickerFragment extends AbstractFilePickerFragment
     {}
 
     /**
-     * Return the path to the parent directory. Should return the root if
-     * from is root.
-     *
-     * @param from
-     */
-    /*@Override
-    protected File getParent(final File from) {
-        if (from.getParentFile() != null) {
-            if (from.isFile()) {
-                return getParent(from.getParentFile());
-            } else {
-                return from.getParentFile();
-            }
-        } else {
-            return from;
-        }
-    }*/
-
-    /**
      * Get the root path (lowest allowed).
      */
     @Override
@@ -69,28 +50,6 @@ public class LocalFilePickerFragment extends AbstractFilePickerFragment
     {
         ((LocalFileSystemObject)currentPath).setPath(path);
     }
-
-    /**
-     * @return a comparator that can sort the items alphabetically
-     */
-    /*@Override
-    protected Comparator<FileSystemObjectInterface> getComparator() {
-        return new Comparator<FileSystemObjectInterface>() {
-            @Override
-            public int compare(final FileSystemObjectInterface lhs,
-                               final FileSystemObjectInterface rhs)
-            {
-                if (lhs.isDir() && !rhs.isDir()) {
-                    return -1;
-                } else if (rhs.isDir() && !lhs.isDir()) {
-                    return 1;
-                } else {
-                    return lhs.getName().toLowerCase().compareTo(rhs.getName()
-                            .toLowerCase());
-                }
-            }
-        };
-    }*/
 
     /**
      * Get a loader that lists the Files in the current path,
@@ -113,7 +72,7 @@ public class LocalFilePickerFragment extends AbstractFilePickerFragment
                 {
                     for (java.io.File f : listFiles)
                     {
-                        if ((mode == MODE_FILE || mode == MODE_FILE_AND_DIR)
+                        if ((mode == SelectionMode.MODE_FILE || mode == SelectionMode.MODE_FILE_AND_DIR)
                                 || f.isDirectory())
                         {
                             LocalFileSystemObject obj = new LocalFileSystemObject(f);
