@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nononsenseapps.filepicker;
+package com.nononsenseapps.filepicker.ui;
 
 
 import android.annotation.SuppressLint;
@@ -28,6 +28,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import com.nononsenseapps.filepicker.R;
 
 public abstract class NewItemFragment extends DialogFragment {
 
@@ -54,8 +56,7 @@ public abstract class NewItemFragment extends DialogFragment {
             Bundle savedInstanceState) {
         getDialog().setTitle(getDialogTitle());
 
-        @SuppressLint("InflateParams") final View view =
-                inflater.inflate(R.layout.dialog_new_item, null);
+        final View view = inflater.inflate(R.layout.dialog_new_item, container, false);
 
         okButton = view.findViewById(R.id.button_ok);
         okButton.setOnClickListener(new View.OnClickListener() {

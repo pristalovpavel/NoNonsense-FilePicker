@@ -15,11 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nononsenseapps.filepicker;
+package com.nononsenseapps.filepicker.ui;
 
 
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
+
+import com.nononsenseapps.filepicker.R;
 
 public class NewFolderFragment extends NewItemFragment {
 

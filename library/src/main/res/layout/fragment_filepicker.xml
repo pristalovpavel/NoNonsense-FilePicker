@@ -60,7 +60,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/grey"
-        android:fontFamily="light"
         android:maxLines="1"
         android:singleLine="true"
         android:scrollHorizontally="false"
@@ -77,7 +76,7 @@
         android:layout_below="@+id/current_dir"
         android:id="@android:id/list"
         android:layout_above="@+id/button_container"
-        tools:listitem="@layout/filepicker_listitem_dir"/>
+        tools:listitem="@layout/filepicker_listitem_checkable"/>
 
     <LinearLayout android:id="@+id/button_container"
                   android:layout_alignParentBottom="true"
@@ -103,7 +102,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:fontFamily="light"
                 android:text="@android:string/cancel"/>
 
             <Button
@@ -112,7 +110,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:fontFamily="light"
                 android:text="@android:string/ok"/>
         </LinearLayout>
 

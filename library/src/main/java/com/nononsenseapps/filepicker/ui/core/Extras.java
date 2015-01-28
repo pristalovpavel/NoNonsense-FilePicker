@@ -1,4 +1,4 @@
-package com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core;
+package com.nononsenseapps.filepicker.ui.core;
 
 /**
  * Created by Pristalov Pavel on 27.01.2015 for NoNonsense-FilePicker.

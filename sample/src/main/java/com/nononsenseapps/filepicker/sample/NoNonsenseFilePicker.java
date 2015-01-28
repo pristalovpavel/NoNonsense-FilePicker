@@ -30,11 +30,10 @@ import android.widget.TextView;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
-import com.nononsenseapps.filepicker.AbstractFilePickerFragment;
-import com.nononsenseapps.filepicker.LocalFilePickerActivity;
-import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.Extras;
-import com.nononsenseapps.filepicker.sample.dropbox.DropboxFilePickerActivity;
-import com.nononsenseapps.filepicker.sample.dropbox.DropboxSyncHelper;
+import com.nononsenseapps.filepicker.ui.core.AbstractFilePickerFragment;
+import com.nononsenseapps.filepicker.ui.core.Extras;
+import com.nononsenseapps.filepicker.dropbox.DropboxFilePickerActivity;
+import com.nononsenseapps.filepicker.dropbox.DropboxSyncHelper;
 
 import java.util.ArrayList;
 

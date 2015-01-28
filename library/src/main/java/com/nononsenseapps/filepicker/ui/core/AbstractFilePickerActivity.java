@@ -15,24 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nononsenseapps.filepicker;
+package com.nononsenseapps.filepicker.ui.core;
 
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.FragmentManager;
-import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.Extras;
+import com.nononsenseapps.filepicker.R;
 
 import java.util.ArrayList;
 import java.util.List;

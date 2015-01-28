@@ -1,4 +1,4 @@
-package com.nononsenseapps.filepicker;
+package com.nononsenseapps.filepicker.ui.core;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,7 +9,8 @@ import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.FileSystemObjectInterface;
+import com.nononsenseapps.filepicker.R;
+import com.nononsenseapps.filepicker.fs.FileSystemObjectInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;

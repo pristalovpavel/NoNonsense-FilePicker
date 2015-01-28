@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nononsenseapps.filepicker;
+package com.nononsenseapps.filepicker.local;
 
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -23,12 +23,13 @@ import android.os.Environment;
 import android.os.FileObserver;
 import android.widget.Toast;
 
-import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.FileSystemObjectInterface;
-import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.LocalFileSystemObject;
+import com.nononsenseapps.filepicker.R;
+import com.nononsenseapps.filepicker.fs.FileSystemObjectInterface;
+import com.nononsenseapps.filepicker.fs.LocalFileSystemObject;
+import com.nononsenseapps.filepicker.ui.core.AbstractFilePickerFragment;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class LocalFilePickerFragment extends AbstractFilePickerFragment
@@ -46,7 +47,7 @@ public class LocalFilePickerFragment extends AbstractFilePickerFragment
     }
 
     @Override
-    protected void initCurrentPath(String path)
+    protected void setCurrentPath(String path)
     {
         ((LocalFileSystemObject)currentPath).setPath(path);
     }

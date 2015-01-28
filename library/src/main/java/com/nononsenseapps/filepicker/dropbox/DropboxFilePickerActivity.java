@@ -15,14 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nononsenseapps.filepicker.sample.dropbox;
+package com.nononsenseapps.filepicker.dropbox;
 
 import android.os.Bundle;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
-import com.nononsenseapps.filepicker.AbstractFilePickerActivity;
-import com.nononsenseapps.filepicker.AbstractFilePickerFragment;
+import com.nononsenseapps.filepicker.ui.core.AbstractFilePickerActivity;
+import com.nononsenseapps.filepicker.ui.core.AbstractFilePickerFragment;
 
 
 public class DropboxFilePickerActivity
@@ -32,7 +32,8 @@ public class DropboxFilePickerActivity
     private DropboxAPI<AndroidAuthSession> mDBApi;
 
     @Override
-    public void onCreate(Bundle b) {
+    public void onCreate(Bundle b)
+    {
         mDBApi = DropboxSyncHelper.getDBApi(this);
         if (!mDBApi.getSession().isLinked()) {
             // No valid authentication

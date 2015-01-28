@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nononsenseapps.filepicker.sample.dropbox;
+package com.nononsenseapps.filepicker.dropbox;
 
 import android.content.Context;
 import android.preference.PreferenceManager;

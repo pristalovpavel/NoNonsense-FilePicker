@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nononsenseapps.filepicker.sample.dropbox;
+package com.nononsenseapps.filepicker.dropbox;
 
 import android.annotation.SuppressLint;
 import android.support.v4.content.AsyncTaskLoader;
@@ -26,14 +26,13 @@ import android.widget.Toast;
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
-import com.nononsenseapps.filepicker.AbstractFilePickerFragment;
-import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.DropboxFileSystemObject;
-import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.FileSystemObjectInterface;
-import com.nononsenseapps.filepicker.sample.R;
+import com.nononsenseapps.filepicker.R;
+import com.nononsenseapps.filepicker.ui.core.AbstractFilePickerFragment;
+import com.nononsenseapps.filepicker.fs.DropboxFileSystemObject;
+import com.nononsenseapps.filepicker.fs.FileSystemObjectInterface;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @SuppressLint("ValidFragment")
@@ -93,7 +92,7 @@ public class DropboxFilePickerFragment
     }
 
     @Override
-    protected void initCurrentPath(String path)
+    protected void setCurrentPath(String path)
     {
         ((DropboxFileSystemObject)currentPath).setPath(path);
     }

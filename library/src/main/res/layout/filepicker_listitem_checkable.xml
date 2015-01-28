@@ -40,6 +40,7 @@
         android:layout_weight="1"
         android:layout_height="match_parent"
         style="?android:textAppearanceLarge"
+        android:background="@color/white"
         android:checked="false"
         android:checkMark="?android:attr/listChoiceIndicatorMultiple"
         android:padding="8dp"

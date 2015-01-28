@@ -20,7 +20,5 @@
     <color name="grey">#e6e6e6</color>
     <color name="dark_grey">#4d4d4d</color>
     <color name="action_select">#6d6d6d</color>
-
-    <color name="activity_background">#ffffffff</color>
-    <color name="action_bar_background">#ffffffff</color>
+    <color name="white">#ffffffff</color>
 </resources>

@@ -1,4 +1,4 @@
-package com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core;
+package com.nononsenseapps.filepicker.fs;
 
 import android.net.Uri;
 import android.text.TextUtils;

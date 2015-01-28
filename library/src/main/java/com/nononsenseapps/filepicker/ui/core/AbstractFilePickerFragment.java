@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nononsenseapps.filepicker;
+package com.nononsenseapps.filepicker.ui.core;
 
 import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
@@ -33,15 +33,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.Extras;
-import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.FileSystemObjectInterface;
-import com.nononsenseapps.filepicker.com.nononsenseapps.filepicker.core.LocalFileSystemObject;
+import com.nononsenseapps.filepicker.ui.NewFolderFragment;
+import com.nononsenseapps.filepicker.ui.NewItemFragment;
+import com.nononsenseapps.filepicker.R;
+import com.nononsenseapps.filepicker.fs.FileSystemObjectInterface;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -53,8 +52,7 @@ import java.util.List;
  * interface.
  */
 public abstract class AbstractFilePickerFragment extends ListFragment
-        implements LoaderManager.LoaderCallbacks<List<FileSystemObjectInterface>>,
-        NewItemFragment.OnNewFolderListener,
+        implements LoaderManager.LoaderCallbacks<List<FileSystemObjectInterface>>, NewItemFragment.OnNewFolderListener,
         AdapterView.OnItemLongClickListener
 {
     public enum SelectionMode
@@ -67,14 +65,6 @@ public abstract class AbstractFilePickerFragment extends ListFragment
     // The different preset modes of operation. This impacts the behaviour
     // and possible actions in the UI.
     protected SelectionMode mode = SelectionMode.MODE_FILE;
-    // Where to display on open.
-    //public static final String KEY_START_PATH = "KEY_START_PATH";
-    // See MODE_XXX constants above for possible values
-    //public static final String KEY_MODE = "KEY_MODE";
-    // If it should be possible to create directories. Only valid with MODE_DIR
-    //public static final String KEY_ALLOW_DIR_CREATE = "KEY_ALLOW_DIR_CREATE";
-    // Allow multiple items to be selected.
-    //public static final String KEY_ALLOW_MULTIPLE = "KEY_ALLOW_MULTIPLE";
     // Used for saving state.
     protected static final String KEY_CURRENT_PATH = "KEY_CURRENT PATH";
     //protected final DefaultHashMap<Integer, Boolean> checkedItems;
@@ -83,7 +73,6 @@ public abstract class AbstractFilePickerFragment extends ListFragment
     protected boolean allowMultiple = false;
     protected Comparator<FileSystemObjectInterface> comparator = null;
     private OnFilePickedListener listener;
-    //private BindableArrayAdapter<T> adapter;
     private FileArrayAdapter adapter;
     private TextView currentDirView;
 
@@ -91,9 +80,8 @@ public abstract class AbstractFilePickerFragment extends ListFragment
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public AbstractFilePickerFragment() {
-        //checkedItems = new DefaultHashMap<Integer, Boolean>(false);
-    }
+    public AbstractFilePickerFragment()
+    {}
 
     /**
      * Set before making the fragment visible.
@@ -104,62 +92,77 @@ public abstract class AbstractFilePickerFragment extends ListFragment
      * @param allowDirCreate
      */
     public void setArgs(final String startPath, final SelectionMode mode,
-            final boolean allowMultiple, final boolean allowDirCreate) {
+            final boolean allowMultiple, final boolean allowDirCreate)
+    {
         Bundle b = new Bundle();
-        if (startPath != null) {
+        if (startPath != null)
+        {
             b.putString(Extras.EXTRA_START_PATH, startPath);
         }
+
         b.putBoolean(Extras.EXTRA_ALLOW_CREATE_DIR, allowDirCreate);
         b.putBoolean(Extras.EXTRA_ALLOW_MULTIPLE, allowMultiple);
         b.putInt(Extras.EXTRA_MODE, mode.ordinal());
+
         setArguments(b);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+            Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.fragment_filepicker, null);
 
         ListView lv = (ListView) view.findViewById(android.R.id.list);
-
         lv.setOnItemLongClickListener(this);
 
         view.findViewById(R.id.button_cancel)
-                .setOnClickListener(new View.OnClickListener() {
+                .setOnClickListener(new View.OnClickListener()
+                {
                     @Override
-                    public void onClick(final View v) {
-                        if (listener != null) {
+                    public void onClick(final View v)
+                    {
+                        if (listener != null)
+                        {
                             listener.onCancelled();
                         }
                     }
                 });
 
         view.findViewById(R.id.button_ok)
-                .setOnClickListener(new View.OnClickListener() {
+                .setOnClickListener(new View.OnClickListener()
+                {
                     @Override
-                    public void onClick(final View v) {
-                        if (listener == null) {
+                    public void onClick(final View v)
+                    {
+                        if (listener == null)
+                        {
                             return;
                         }
 
                         List<FileSystemObjectInterface> checkedItems = adapter.getCheckedItems();
                         // Some invalid cases first
-                        if (allowMultiple && checkedItems.isEmpty()) {
+                        if (allowMultiple && checkedItems.isEmpty())
+                        {
                             Toast.makeText(getActivity(),
                                     R.string.select_something_first,
                                     Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        if (mode == SelectionMode.MODE_FILE && currentPath.isDir()) {
+                        if (mode == SelectionMode.MODE_FILE && currentPath.isDir())
+                        {
                             Toast.makeText(getActivity(),
                                     R.string.select_something_first,
                                     Toast.LENGTH_SHORT).show();
                             return;
                         }
 
-                        if (allowMultiple) {
+                        if (allowMultiple)
+                        {
                             listener.onFilesPicked(toUri(checkedItems));
-                        } else {
+                        }
+                        else
+                        {
                             listener.onFilePicked(currentPath.toUri());
                         }
                     }
@@ -168,14 +171,14 @@ public abstract class AbstractFilePickerFragment extends ListFragment
         view.findViewById(R.id.button_go_parent)
                 .setOnClickListener(new View.OnClickListener()
                 {
-                            @Override
-                            public void onClick(final View v)
-                            {
-                                // Go to parent
-                                currentPath = currentPath.getParent();
-                                refresh();
-                            }
-                        });
+                    @Override
+                    public void onClick(final View v)
+                    {
+                        // Go to parent
+                        currentPath = currentPath.getParent();
+                        refresh();
+                    }
+                });
 
         final View createDirView = view.findViewById(R.id.button_create_dir);
         // Only show the create dir button if configured to
@@ -183,13 +186,16 @@ public abstract class AbstractFilePickerFragment extends ListFragment
                                     View.VISIBLE :
                                     View.INVISIBLE);
         createDirView.setEnabled((allowCreateDir && (mode == SelectionMode.MODE_DIR)));
-        createDirView.setOnClickListener(new View.OnClickListener() {
+        createDirView.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(final View v) {
+            public void onClick(final View v)
+            {
                 Activity activity = getActivity();
                 if(activity instanceof FragmentActivity)
                 {
-                    NewFolderFragment.showDialog(((FragmentActivity) activity).getSupportFragmentManager(),
+                    NewFolderFragment.showDialog(
+                            ((FragmentActivity) activity).getSupportFragmentManager(),
                             AbstractFilePickerFragment.this);
                 }
             }
@@ -197,7 +203,8 @@ public abstract class AbstractFilePickerFragment extends ListFragment
 
         currentDirView = (TextView) view.findViewById(R.id.current_dir);
         // Restore state
-        if (currentPath != null) {
+        if (currentPath != null)
+        {
             currentDirView.setText(currentPath.getFullPath());
         }
 
@@ -300,9 +307,7 @@ public abstract class AbstractFilePickerFragment extends ListFragment
                         .getBoolean(Extras.EXTRA_ALLOW_CREATE_DIR, allowCreateDir);
                 allowMultiple = savedInstanceState
                         .getBoolean(Extras.EXTRA_ALLOW_MULTIPLE, allowMultiple);
-                // TODO need to operate with FileSystemObjectInterface here!
-                currentPath =
-                        new LocalFileSystemObject(new File(savedInstanceState.getString(KEY_CURRENT_PATH)));
+                setCurrentPath(savedInstanceState.getString(KEY_CURRENT_PATH));
             }
             else if (getArguments() != null)
             {
@@ -314,9 +319,7 @@ public abstract class AbstractFilePickerFragment extends ListFragment
                         .getBoolean(Extras.EXTRA_ALLOW_MULTIPLE, allowMultiple);
                 if (getArguments().containsKey(Extras.EXTRA_START_PATH))
                 {
-                    // TODO need to operate with FileSystemObjectInterface here!
-                    currentPath =
-                            new LocalFileSystemObject(new File(getArguments().getString(Extras.EXTRA_START_PATH)));
+                    setCurrentPath(getArguments().getString(KEY_CURRENT_PATH));
                 }
             }
 
@@ -352,7 +355,7 @@ public abstract class AbstractFilePickerFragment extends ListFragment
      */
     protected abstract FileSystemObjectInterface getRoot();
 
-    protected abstract void initCurrentPath(String currentPath);
+    protected abstract void setCurrentPath(String currentPath);
 
     /**
      * Refreshes the list. Call this when current path changes.
@@ -451,94 +454,6 @@ public abstract class AbstractFilePickerFragment extends ListFragment
         adapter.notifyDataSetChanged();
         currentDirView.setText(currentPath.getFullPath());
     }
-
-    /**
-     * @return a ViewBinder to handle list items, or null.
-     */
-    /*protected BindableArrayAdapter.ViewBinder<T> getViewBinder() {
-        class ViewHolder {
-            protected View icon;
-            protected TextView text;
-            protected CheckedTextView checkbox;
-        }
-
-        return new BindableArrayAdapter.ViewBinder<T>() {
-
-            /**
-             * Called if convertView is null. If this returns null,
-             * the specified resource is used. Use this to return multiple views
-             * depending on type.
-             *
-             * @param position
-             * @param defResource
-             * @param inflater
-             * @param parent
-             * @return
-             */
-            /*@Override
-            public View inflateView(final int position, final int defResource,
-                    final LayoutInflater inflater, final ViewGroup parent) {
-                final boolean checkable =
-                        isCheckable((T) getListAdapter().getItem(position));
-                final View view = inflater.inflate(checkable ?
-                                                   R.layout.filepicker_listitem_checkable :
-                                                   R.layout.filepicker_listitem_dir,
-                        parent, false);
-
-                ViewHolder viewHolder = new ViewHolder();
-                viewHolder.icon = view.findViewById(R.id.item_icon);
-
-                viewHolder.text =
-                        (TextView) view.findViewById(android.R.id.text1);
-                if (checkable) {
-                    viewHolder.checkbox = (CheckedTextView) view
-                            .findViewById(android.R.id.text1);
-                } else {
-                    viewHolder.checkbox = null;
-                }
-                view.setTag(viewHolder);
-
-                return view;
-            }
-
-            /**
-             * Used to determine the view's type. Returning false will use same
-             * type for all rows.
-             *
-             * @param position
-             * @param data
-             * @return
-             */
-            /*@Override
-            public boolean isDir(final int position, final T data) {
-                return AbstractFilePickerFragment.this.isDir(data);
-            }*/
-
-            /**
-             * Fill the content in the row
-             * @param view
-             * @param position
-             * @param data
-             */
-            /*@Override
-            public void setViewValue(final View view, final int position,
-                    final FileSystemObjectInterface data) {
-                if (view.getTag() == null) {
-                    return;
-                }
-
-                ((ViewHolder) view.getTag()).text.setText(data.getName());
-
-                ((ViewHolder) view.getTag()).icon.setVisibility(
-                        isDir(position, data) ? View.VISIBLE : View.GONE);
-
-                if (((ViewHolder) view.getTag()).checkbox != null) {
-                    ((ViewHolder) view.getTag()).checkbox
-                            .setChecked(checkedItems.get(position));
-                }
-            }
-        };
-    }*/
 
     /**
      * @return a comparator that can sort the items alphabetically

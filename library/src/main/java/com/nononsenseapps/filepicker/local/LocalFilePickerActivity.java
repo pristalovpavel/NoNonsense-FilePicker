@@ -15,9 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nononsenseapps.filepicker;
+package com.nononsenseapps.filepicker.local;
 
 import android.annotation.SuppressLint;
+
+import com.nononsenseapps.filepicker.ui.core.AbstractFilePickerActivity;
+import com.nononsenseapps.filepicker.ui.core.AbstractFilePickerFragment;
 
 import java.io.File;
 
