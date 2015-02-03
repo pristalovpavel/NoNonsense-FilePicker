@@ -39,7 +39,7 @@
         android:layout_weight="1"
         android:layout_height="match_parent"
         style="?android:textAppearanceLarge"
-        android:background="@color/white"
+        android:background="@android:color/transparent"
         android:padding="8dp"
         android:gravity="center_vertical"
         android:id="@android:id/text1"
