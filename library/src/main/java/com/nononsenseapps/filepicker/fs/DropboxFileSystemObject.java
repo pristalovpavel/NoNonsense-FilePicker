@@ -43,8 +43,8 @@ public class DropboxFileSystemObject implements FileSystemObjectInterface
      *
      * @return path to object
      */
-    @Override
-    public DropboxFileSystemObject getDir(String path)
+    //@Override
+    public DropboxFileSystemObject createDir(String path)
     {
         final DropboxAPI.Entry entry = new DropboxAPI.Entry();
         entry.path = path;
@@ -72,17 +72,6 @@ public class DropboxFileSystemObject implements FileSystemObjectInterface
     public boolean isDir()
     {
         return file != null ? file.isDir : false;
-    }
-
-    /**
-     * Returns true if the object is file
-     *
-     * @return true - file, false otherwise
-     */
-    @Override
-    public boolean isFile()
-    {
-        return file != null ? !file.isDir : false;
     }
 
     /**
@@ -114,7 +103,7 @@ public class DropboxFileSystemObject implements FileSystemObjectInterface
             parent = "/";
         }
 
-        return getDir(parent);
+        return createDir(parent);
     }
 
     /**

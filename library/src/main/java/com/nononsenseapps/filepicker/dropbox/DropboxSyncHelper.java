@@ -35,26 +35,27 @@ import com.dropbox.client2.session.AppKeyPair;
  * See here for info:
  * https://www.dropbox.com/developers/core/sdks/android
  */
-public class DropboxSyncHelper {
+public class DropboxSyncHelper
+{
     // Change these two lines to your app's stuff
     final static public String APP_KEY = "l5fr0xxn84xqh4s";
     final static public String APP_SECRET = "kxgmkxo7m4li9l0";
 
     public static final String PREF_DROPBOX_TOKEN = "dropboxtoken";
 
-    public static DropboxAPI<AndroidAuthSession> getDBApi(
-            final Context context) {
+    public static DropboxAPI<AndroidAuthSession> getDBApi(final Context context)
+    {
         final DropboxAPI<AndroidAuthSession> mDBApi;
 
         final AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
         final AndroidAuthSession session;
 
-        if (PreferenceManager.getDefaultSharedPreferences(context)
-                .contains(PREF_DROPBOX_TOKEN)) {
-            session = new AndroidAuthSession(appKeys,
-                    PreferenceManager.getDefaultSharedPreferences(context)
-                            .getString(PREF_DROPBOX_TOKEN, ""));
-        } else {
+        if (PreferenceManager.getDefaultSharedPreferences(context).contains(PREF_DROPBOX_TOKEN))
+        {
+            session = new AndroidAuthSession(appKeys, PreferenceManager.getDefaultSharedPreferences(context).getString(PREF_DROPBOX_TOKEN, "")
+            );
+        } else
+        {
             session = new AndroidAuthSession(appKeys);
         }
         mDBApi = new DropboxAPI<AndroidAuthSession>(session);
@@ -64,11 +65,12 @@ public class DropboxSyncHelper {
     /**
      * Save the dropbox oauth token so we can reuse the session without
      * logging in again.
+     *
      * @param context
      * @param token
      */
-    public static void saveToken(final Context context, final String token) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit()
-                .putString(PREF_DROPBOX_TOKEN, token).commit();
+    public static void saveToken(final Context context, final String token)
+    {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putString(PREF_DROPBOX_TOKEN, token).commit();
     }
 }

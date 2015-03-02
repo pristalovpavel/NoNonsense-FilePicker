@@ -80,9 +80,7 @@ public class FileArrayAdapter extends BaseAdapter
         FileSystemObjectInterface obj = getItem(position);
 
         if (obj.isDir()) return DIRECTORY_CODE;
-        else if (obj.isFile()) return FILE_CODE;
-
-        return WRONG_CODE;
+        else return FILE_CODE;
     }
 
     @Override

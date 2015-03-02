@@ -40,17 +40,17 @@ public class LocalFileSystemObject
     }
 
     /**
-     * Returns the full path to current file or directory
+     * Returns directory object with specified path
      *
      * @return path to object
      */
-    @Override
+    /*@Override
     public LocalFileSystemObject getDir(String path)
     {
         return !TextUtils.isEmpty(path) ?
                 new LocalFileSystemObject(new File(path)) :
                 null;
-    }
+    }*/
 
     /**
      * Returns String-path to current object (with file name)
@@ -72,17 +72,6 @@ public class LocalFileSystemObject
     public boolean isDir()
     {
         return file != null ? file.isDirectory() : false;
-    }
-
-    /**
-     * Returns true if the object is file
-     *
-     * @return true - file, false otherwise
-     */
-    @Override
-    public boolean isFile()
-    {
-        return file != null ? file.isFile() : false ;
     }
 
     /**

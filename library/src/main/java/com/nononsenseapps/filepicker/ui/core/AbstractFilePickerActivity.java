@@ -62,17 +62,8 @@ import java.util.List;
  *
  * @param <T>
  */
-public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
-        implements AbstractFilePickerFragment.OnFilePickedListener {
-    //public static final String EXTRA_START_PATH =
-    //        "nononsense.intent" + ".START_PATH";
-    //public static final String EXTRA_MODE = "nononsense.intent.MODE";
-//    public static final String EXTRA_ALLOW_CREATE_DIR =
-//            "nononsense.intent" + ".ALLOW_CREATE_DIR";
-    // For compatibility
-//    public static final String EXTRA_ALLOW_MULTIPLE =
-//            "android.intent.extra" + ".ALLOW_MULTIPLE";
-    //public static final String EXTRA_PATHS = "nononsense.intent.PATHS";
+public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity implements AbstractFilePickerFragment.OnFilePickedListener
+{
     protected static final String TAG = "filepicker_fragment";
     protected String startPath = null;
     protected AbstractFilePickerFragment.SelectionMode mode = AbstractFilePickerFragment.SelectionMode.MODE_FILE;
@@ -89,11 +80,10 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
         setContentView(R.layout.activity_filepicker);
 
         Intent intent = getIntent();
-        if (intent != null) {
+        if (intent != null)
+        {
             startPath = intent.getStringExtra(Extras.EXTRA_START_PATH);
-            mode = AbstractFilePickerFragment.SelectionMode.values()
-                    [intent.getIntExtra(Extras.EXTRA_MODE,
-                    AbstractFilePickerFragment.SelectionMode.MODE_FILE.ordinal())];
+            mode = AbstractFilePickerFragment.SelectionMode.values()[intent.getIntExtra(Extras.EXTRA_MODE, AbstractFilePickerFragment.SelectionMode.MODE_FILE.ordinal())];
             allowCreateDir = intent.getBooleanExtra(Extras.EXTRA_ALLOW_CREATE_DIR, allowCreateDir);
             allowMultiple = intent.getBooleanExtra(Extras.EXTRA_ALLOW_MULTIPLE, allowMultiple);
         }
@@ -101,17 +91,16 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
         setupActionBar();
 
         FragmentManager fm = getSupportFragmentManager();
-        AbstractFilePickerFragment fragment =
-                (AbstractFilePickerFragment) fm.findFragmentByTag(TAG);
+        AbstractFilePickerFragment fragment = (AbstractFilePickerFragment) fm.findFragmentByTag(TAG);
 
-        if (fragment == null) {
-            fragment =
-                    getFragment(startPath, mode, allowMultiple, allowCreateDir);
+        if (fragment == null)
+        {
+            fragment = getFragment(startPath, mode, allowMultiple, allowCreateDir);
         }
 
-        if (fragment != null) {
-            fm.beginTransaction().replace(R.id.fragment, fragment, TAG)
-                    .commit();
+        if (fragment != null)
+        {
+            fm.beginTransaction().replace(R.id.fragment, fragment, TAG).commit();
         }
 
         // Default to cancelled
@@ -122,8 +111,8 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
     {
         // Check if this should be a dialog
         TypedValue tv = new TypedValue();
-        if (!getTheme().resolveAttribute(R.attr.isDialog, tv, true) ||
-            tv.data == 0) {
+        if (!getTheme().resolveAttribute(R.attr.isDialog, tv, true) || tv.data == 0)
+        {
             return;
         }
 
@@ -131,11 +120,9 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
         DisplayMetrics dm = getResources().getDisplayMetrics();
 
         WindowManager.LayoutParams params = getWindow().getAttributes();
-        params.width = getResources()
-                .getDimensionPixelSize(R.dimen.configure_dialog_width);
-        params.height = Math.min(getResources()
-                .getDimensionPixelSize(R.dimen.configure_dialog_max_height),
-                dm.heightPixels * 3 / 4);
+        params.width = getResources().getDimensionPixelSize(R.dimen.configure_dialog_width);
+        params.height = Math.min(getResources().getDimensionPixelSize(R.dimen.configure_dialog_max_height), dm.heightPixels * 3 / 4
+        );
         params.alpha = 1.0f;
         params.dimAmount = 0.5f;
         getWindow().setAttributes(params);
@@ -146,9 +133,7 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
         getSupportActionBar().setTitle(getWindowTitle());
     }
 
-    protected abstract AbstractFilePickerFragment getFragment(
-            final String startPath, final AbstractFilePickerFragment.SelectionMode mode, final boolean allowMultiple,
-            final boolean allowCreateDir);
+    protected abstract AbstractFilePickerFragment getFragment(final String startPath, final AbstractFilePickerFragment.SelectionMode mode, final boolean allowMultiple, final boolean allowCreateDir);
 
     /**
      * @return the title to apply to the window
@@ -174,8 +159,7 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
         if (allowMultiple)
         {
             count = 99;
-        }
-        else
+        } else
         {
             count = 1;
         }
@@ -205,7 +189,10 @@ public abstract class AbstractFilePickerActivity<T> extends ActionBarActivity
         i.putExtra(Extras.EXTRA_ALLOW_MULTIPLE, true);
 
         ArrayList<String> paths = new ArrayList<String>();
-        for (Uri file : files) {paths.add(file.toString());}
+        for (Uri file : files)
+        {
+            paths.add(file.toString());
+        }
         i.putStringArrayListExtra(Extras.EXTRA_PATHS, paths);
 
         setResult(Activity.RESULT_OK, i);

@@ -16,10 +16,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.nononsenseapps.filepicker.sample" >
+          package="com.nononsenseapps.filepicker.sample">
 
     <!-- For SD-card -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <!-- For Dropbox -->
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -28,17 +28,17 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/SampleTheme" >
+        android:theme="@style/SampleTheme">
 
         <!-- Sample app -->
         <activity
             android:name="com.nononsenseapps.filepicker.sample.NoNonsenseFilePicker"
             android:label="@string/title_activity_no_nonsense_file_picker"
-            android:theme ="@style/AppCompatTheme">
+            android:theme="@style/AppCompatTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
@@ -48,8 +48,8 @@
             android:label="@string/app_name"
             android:theme="@style/AppCompatTheme">
             <intent-filter>
-                <action android:name="android.intent.action.GET_CONTENT" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.GET_CONTENT"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
 
@@ -60,10 +60,11 @@
             android:configChanges="orientation|keyboard">
             <intent-filter>
                 <!-- Change this to be db- followed by your app key -->
-                <data android:scheme="db-l5fr0xxn84xqh4s" />
-                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="db-l5fr0xxn84xqh4s"/>
+                <action android:name="android.intent.action.VIEW"/>
+
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
 
@@ -73,6 +74,17 @@
             android:label="@string/app_name"
             android:theme="@style/AppCompatTheme">
         </activity>
+
+        <!-- Drive picker -->
+        <activity
+            android:name="com.nononsenseapps.filepicker.sample.googledrive.DriveFilePickerActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppCompatTheme">
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
     </application>
 
 </manifest>

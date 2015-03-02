@@ -36,46 +36,54 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressLint("ValidFragment")
-public class DropboxFilePickerFragment
-        extends AbstractFilePickerFragment
+public class DropboxFilePickerFragment extends AbstractFilePickerFragment
 {
     private final DropboxAPI<AndroidAuthSession> dbApi;
     private FolderCreator folderCreator;
 
     @SuppressLint("ValidFragment")
-    public DropboxFilePickerFragment(final DropboxAPI<AndroidAuthSession> api) {
+    public DropboxFilePickerFragment(final DropboxAPI<AndroidAuthSession> api)
+    {
         super();
-        if (api == null) {
+        if (api == null)
+        {
             throw new NullPointerException("FileSystem may not be null");
-        } else if (!api.getSession().isLinked()) {
+        } else if (!api.getSession().isLinked())
+        {
             throw new IllegalArgumentException("Must be linked with Dropbox");
         }
 
         this.dbApi = api;
     }
 
-    public void onNewFolder(final String name) {
+    public void onNewFolder(final String name)
+    {
         File folder = new File(currentPath.getFullPath(), name);
 
-        if (folderCreator == null) {
+        if (folderCreator == null)
+        {
             folderCreator = new FolderCreator();
         }
 
         folderCreator.execute(folder.getPath());
     }
 
-    private class FolderCreator extends AsyncTask<String, Void, Void> {
+    private class FolderCreator extends AsyncTask<String, Void, Void>
+    {
 
         @Override
-        protected Void doInBackground(final String... paths) {
-            for (String path : paths) {
-                try {
+        protected Void doInBackground(final String... paths)
+        {
+            for (String path : paths)
+            {
+                try
+                {
                     dbApi.createFolder(path);
                     //currentPath = dbApi.metadata(path, 1, null, false, null);
                     refresh();
-                } catch (DropboxException e) {
-                    Toast.makeText(getActivity(), R.string.create_folder_error,
-                            Toast.LENGTH_SHORT).show();
+                } catch (DropboxException e)
+                {
+                    Toast.makeText(getActivity(), R.string.create_folder_error, Toast.LENGTH_SHORT).show();
                 }
             }
             return null;
@@ -94,7 +102,7 @@ public class DropboxFilePickerFragment
     @Override
     protected void setCurrentPath(String path)
     {
-        ((DropboxFileSystemObject)currentPath).setPath(path);
+        ((DropboxFileSystemObject) currentPath).setPath(path);
     }
 
     @Override
@@ -105,27 +113,24 @@ public class DropboxFilePickerFragment
             @Override
             public List<FileSystemObjectInterface> loadInBackground()
             {
-                ArrayList<FileSystemObjectInterface> files =
-                        new ArrayList<FileSystemObjectInterface>();
+                ArrayList<FileSystemObjectInterface> files = new ArrayList<FileSystemObjectInterface>();
                 try
                 {
-                    if (!dbApi.metadata(currentPath.getFullPath(), 1, null, false,
-                            null).isDir) {
+                    if (!dbApi.metadata(currentPath.getFullPath(), 1, null, false, null).isDir)
+                    {
                         currentPath = getRoot();
                     }
 
-                    DropboxAPI.Entry dirEntry =
-                            dbApi.metadata(currentPath.getFullPath(), 0, null, true,
-                                    null);
+                    DropboxAPI.Entry dirEntry = dbApi.metadata(currentPath.getFullPath(), 0, null, true, null);
                     for (DropboxAPI.Entry entry : dirEntry.contents)
                     {
-                        if ((mode == SelectionMode.MODE_FILE || mode == SelectionMode.MODE_FILE_AND_DIR) ||
-                            entry.isDir)
+                        if ((mode == SelectionMode.MODE_FILE || mode == SelectionMode.MODE_FILE_AND_DIR) || entry.isDir)
                         {
                             files.add(new DropboxFileSystemObject(entry));
                         }
                     }
-                } catch (DropboxException e) {
+                } catch (DropboxException e)
+                {
                 }
 
                 return files;

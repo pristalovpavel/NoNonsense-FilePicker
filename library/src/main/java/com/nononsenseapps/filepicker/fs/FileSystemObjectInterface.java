@@ -14,10 +14,10 @@ public interface FileSystemObjectInterface
     public String getName();
 
     /**
-     * Returns the full path to current file or directory
+     * Returns directory object with specified path
      * @return path to object
      */
-    public FileSystemObjectInterface getDir(String path);
+    //public FileSystemObjectInterface getDir(String path);
 
     /**
      * Returns String-path to current object (with file name)
@@ -30,12 +30,6 @@ public interface FileSystemObjectInterface
      * @return true - folder, false otherwise
      */
     public boolean isDir();
-
-    /**
-     * Returns true if the object is file
-     * @return true - file, false otherwise
-     */
-    public boolean isFile();
 
     /**
      * Returns Uri representation of file path

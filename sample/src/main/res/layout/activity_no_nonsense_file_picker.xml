@@ -123,6 +123,18 @@
             android:fontFamily="light"
             android:layout_gravity="center"/>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Pick Drive"
+            android:layout_marginTop="8dp"
+            android:id="@+id/button_drive"
+            android:gravity="center_vertical"
+            style="?android:textAppearanceMedium"
+            android:fontFamily="light"
+            android:layout_gravity="center"/>
+
+
         <TextView
             android:id="@+id/text"
             android:padding="16dp"

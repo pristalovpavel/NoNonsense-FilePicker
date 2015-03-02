@@ -355,7 +355,10 @@ public abstract class AbstractFilePickerFragment extends ListFragment
      */
     protected abstract FileSystemObjectInterface getRoot();
 
-    protected abstract void setCurrentPath(String currentPath);
+    protected void setCurrentPath(String newPath)
+    {
+        currentPath.setPath(newPath);
+    }
 
     /**
      * Refreshes the list. Call this when current path changes.
